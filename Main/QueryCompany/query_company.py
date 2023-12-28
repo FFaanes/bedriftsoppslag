@@ -150,19 +150,19 @@ def query_company(name_or_number):
             if len(name_or_number_strip) == 9:
                 org_nr = int(name_or_number_strip)
                 external_info = get_external_info(get_company_name(org_nr))
-                print("Found by number.")
+                #print("Found by number.")
 
         except ValueError:
             # Load csv and search for organisation number
-            csv_files_path = os.listdir("./data")
+            csv_files_path = os.listdir("./QueryCompany/data")
 
             for csv_path in csv_files_path:
-                brreg_file = pd.read_csv(f"./data/{csv_path}")
+                brreg_file = pd.read_csv(f"./QueryCompany/data/{csv_path}")
                 search_result = brreg_file[brreg_file["navn"] == name_or_number.upper()]
                 try:
                     org_nr = int(search_result.iat[0,0])
                     if len(org_nr) == 9:
-                        print(f"Found org_nr in file: {csv_path}")
+                        #print(f"Found org_nr in file: {csv_path}")
                         break
                 except:
                     pass
@@ -192,11 +192,7 @@ def query_company(name_or_number):
         print(f"Something went wrong.\n{e}")
         return None
 
-
-
-org_nr = "Normann Faanes"
-print(query_company(org_nr))
-
+    
 #clean_csv("./data/brreg.csv","./data/clean_brreg.csv")
 
 
