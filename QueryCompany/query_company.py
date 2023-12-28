@@ -103,6 +103,7 @@ def get_external_info(company_name):
             for email in generated_email_list:
                 if validate_email(email) == True:
                     emails.append(email)
+        emails = list(set(emails)) # Make sure no duplicates
 
 
         # Remove unwanted emails:
@@ -115,23 +116,23 @@ def get_external_info(company_name):
             pass
         
         # Website url only valid if it is not longer than x letters
-        if len(str(website)) > 80:
-            website = None
+        #if len(str(website)) > 80:
+        #    website = None
 
         # Check if the request is restricted
         request_restricted = False if response.status_code == 200 else True
 
         return {"website" : website,
-                "valid_emails" : emails,
-                "potential_emails": generated_email_list,
+                "potential_valid_emails" : emails,
+                "suggested_emails": generated_email_list,
                 "company_name_in_url" : company_name_in_url,
                 "company_name_in_email" : companyname_in_email,
                 "request_restricted" : request_restricted}
     except Exception as e:
         print(e)
         return {"website" : None,
-                "valid_emails" : None,
-                "potential_emails": None,
+                "potential_valid_emails" : None,
+                "suggested_emails": None,
                 "company_name_in_url" : None,
                 "company_name_in_email" : None,
                 "request_restricted" : None}
@@ -150,7 +151,6 @@ def query_company(name_or_number):
                 org_nr = int(name_or_number_strip)
                 external_info = get_external_info(get_company_name(org_nr))
                 print("Found by number.")
-
 
         except ValueError:
             # Load csv and search for organisation number
@@ -194,7 +194,7 @@ def query_company(name_or_number):
 
 
 
-org_nr = "Frostahallen SA"
+org_nr = "Normann Faanes"
 print(query_company(org_nr))
 
 #clean_csv("./data/brreg.csv","./data/clean_brreg.csv")
