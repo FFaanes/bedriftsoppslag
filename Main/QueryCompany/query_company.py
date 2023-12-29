@@ -30,7 +30,7 @@ def get_company_name(organisation_number):
     org_navn = org_request["navn"]
     return org_navn
 
-def get_external_info(company_name):
+def get_external_info(company_name, validate_emails=False):
     try:
         # Perform a Google search for the company name
         company_name = company_name.lower().replace("as", "").strip() # Remove AS
@@ -98,11 +98,11 @@ def get_external_info(company_name):
         generated_email_list = list(set(generated_email_list))
 
         # Loop over generated emails to check if they exist.
-        validate_emails = False
+        checked_emails = []
         if validate_emails == True:
             for email in generated_email_list:
                 if validate_email(email) == True:
-                    emails.append(email)
+                    checked_emails.append(email)
         emails = list(set(emails)) # Make sure no duplicates
 
 
@@ -125,6 +125,7 @@ def get_external_info(company_name):
         return {"website" : website,
                 "potential_valid_emails" : emails,
                 "suggested_emails": generated_email_list,
+                "checked_emails" : checked_emails,
                 "company_name_in_url" : company_name_in_url,
                 "company_name_in_email" : companyname_in_email,
                 "request_restricted" : request_restricted}
@@ -133,6 +134,7 @@ def get_external_info(company_name):
         return {"website" : None,
                 "potential_valid_emails" : None,
                 "suggested_emails": None,
+                "checked_emails" : None,
                 "company_name_in_url" : None,
                 "company_name_in_email" : None,
                 "request_restricted" : None}
@@ -141,7 +143,7 @@ def get_external_info(company_name):
 
 
 # Main function
-def query_company(name_or_number):
+def query_company(name_or_number, validate_emails=False):
     try:
         try:
             name_or_number_strip = name_or_number.replace(" ","")
@@ -149,8 +151,6 @@ def query_company(name_or_number):
 
             if len(name_or_number_strip) == 9:
                 org_nr = int(name_or_number_strip)
-                external_info = get_external_info(get_company_name(org_nr))
-                #print("Found by number.")
 
         except ValueError:
             # Load csv and search for organisation number
@@ -162,14 +162,11 @@ def query_company(name_or_number):
                 try:
                     org_nr = int(search_result.iat[0,0])
                     if len(org_nr) == 9:
-                        #print(f"Found org_nr in file: {csv_path}")
                         break
                 except:
                     pass
                 
-            external_info = get_external_info(get_company_name(org_nr))
-            print("Found by name.")
-    
+        external_info = get_external_info(get_company_name(org_nr), validate_emails=validate_emails)
         brreg_url = f"https://data.brreg.no/enhetsregisteret/api/enheter/{org_nr}"
         brreg_request = requests.get(brreg_url).json()
 

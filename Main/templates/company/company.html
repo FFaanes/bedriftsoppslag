@@ -1,8 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Company Info:</h1>
+<div style="margin:30px">
+<h1>{{company_info["info"]["org_navn"]}}</h1>
+<h3>org. nr: {{company_info["info"]["org_nr"]}}</h3>
 <hr>
-{{company_info}}
+<h2>Info</h2>
+{% for item in company_info["info"] %}
+    <p>{{item}} : {{company_info["info"][item]}}</p>
 
+{% endfor %}
+
+<hr>
+<h2>External Info</h2>
+{% for item in company_info["external_info"] %}
+   <p>{{item}} : {{company_info["external_info"][item]}}</p>
+
+{% endfor %}
+</div>
 {% endblock %}

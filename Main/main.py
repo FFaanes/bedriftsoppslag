@@ -18,7 +18,7 @@ def index():
 
 @app.route("/company/<company>")
 def company(company):
-    company_info = query_company(company)
+    company_info = query_company(company, validate_emails=False)
     return render_template("company/company.html", company_info=company_info)
 
 
