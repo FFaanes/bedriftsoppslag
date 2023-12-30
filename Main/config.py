@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 
 
 def app_setup():
@@ -8,8 +7,4 @@ def app_setup():
     app.config["HOST"] = "localhost"
     app.config["PORT"] = 5000
     app.config["DEBUG"] = False
-
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
-    db = SQLAlchemy(app)
-
-    return app, db
+    return app

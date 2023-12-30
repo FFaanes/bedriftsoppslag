@@ -110,7 +110,6 @@ def get_external_info(company_name, validate_emails=False):
         try:
             unwanted_emails = ["kundeservice@1881.no"]
             for email in unwanted_emails:
-                print(f"Popped: {email}")
                 emails.remove(email)
         except:
             pass

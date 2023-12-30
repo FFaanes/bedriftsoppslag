@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form method="POST" action="">
+        {{form.hidden_tag()}}
+        {% if org_nr %}
+            {{form.org_nr(value=org_nr)}}
+        {% else %}
+            {{form.org_nr}}
+        {% endif %}
+        {{form.password}}
+        {{form.c_password}}
+        {{form.submit}}
+    </form>
+{% endblock %}
