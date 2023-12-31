@@ -1,11 +1,18 @@
 
 html {
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
     background-color: rgb(167, 202, 169);
-    font-family: 'Courier New', Courier, monospace;
+    padding: 0px;
+    margin: 0px;
 }
 
 .flash_messages {
     background-color: rgba(20, 20, 20, 0.068);
+    width: fit-content;
+    padding: 10px;
     border-radius: 5px;
 }
 
@@ -13,8 +20,12 @@ html {
     background-color: rgba(20, 20, 20, 0.068);
     display: flex;
     justify-content: center;
+    padding: 10px;
+    margin: 0px;
 }
 
 .navbar a {
-    padding: 0px 20px 0px 20px
+    padding: 0px 30px 0px 30px;
+    color: white;
+    text-decoration: none;
 }

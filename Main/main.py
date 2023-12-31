@@ -24,7 +24,6 @@ login_manager.login_view = "login"
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-
 # Setup Database
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{os.path.join(basedir, 'database.db')}"
@@ -32,7 +31,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
-# Database Tables
+
 
 # User
 class User(db.Model, UserMixin):
@@ -43,14 +42,6 @@ class User(db.Model, UserMixin):
     permission = db.Column(db.Integer)
 
 
-# Index Route
-@app.route("/", methods=["GET","POST"])
-def index():
-    if request.method == "POST":
-        company_name_or_code = request.form.get("company_name_or_code")
-        return redirect(f"/company/{company_name_or_code}")
-    else:
-        return render_template("index/index.html")
     
 # Register Form
 class RegisterForm(FlaskForm):
@@ -71,8 +62,40 @@ class RegisterForm(FlaskForm):
         if org_name == None:
             flash("Company number not valid")
             raise ValidationError("Company number not valid")
+
+# Login Form
+class LoginForm(FlaskForm):
+    org_nr = StringField(validators=[InputRequired(), Length(min=9, max=9)], render_kw={"placeholder":"Organisation Number"})
+    password = PasswordField(validators=[InputRequired(),Length(min=1, max=20)], render_kw={"placeholder":"Password"})
+    submit = SubmitField("Submit")
+
+    def validate_org_nr(form, field):
+        user = User.query.filter_by(company_number=field.data).first()
+        if not user:
+            flash("Company not registered")
+            raise ValidationError("Company not registered")
+        
+    def validate_password(form, field):
+        user = User.query.filter_by(company_number = form.org_nr.data).first()
+        if user:
+            if not bcrypt.check_password_hash(user.password_hash, field.data):
+                flash("Password is incorrect")
+                raise ValidationError("Password is incorrect")
     
-            
+
+
+
+# Index Route
+@app.route("/", methods=["GET","POST"])
+def index():
+    if request.method == "POST":
+        company_name_or_code = request.form.get("company_name_or_code")
+        return redirect(f"/company/{company_name_or_code}")
+    else:
+        return render_template("index/index.html")
+
+
+
 # Register Page
 @app.route("/register", methods=["GET","POST"])
 def register():
@@ -91,24 +114,6 @@ def register():
 
     return render_template("register/register.html", form=form)
 
-
-# Login Form
-class LoginForm(FlaskForm):
-    org_nr = StringField(validators=[InputRequired(), Length(min=9, max=9)], render_kw={"placeholder":"Organisation Number"})
-    password = PasswordField(validators=[InputRequired(),Length(min=1, max=20)], render_kw={"placeholder":"Password"})
-    submit = SubmitField("Submit")
-
-    def validate_org_nr(form, field):
-        user = User.query.filter_by(company_number=field.data).first()
-        if not user:
-            flash("Company not registered")
-            raise ValidationError("Company not registered")
-        
-    def validate_password(form, field):
-        user = User.query.filter_by(company_number = form.org_nr.data).first()
-        if not bcrypt.check_password_hash(user.password_hash, field.data):
-            flash("Password is incorrect")
-            raise ValidationError("Password is incorrect")
 
 
 # Login Page
@@ -156,5 +161,8 @@ def company(company):
     return render_template("company/company.html", company_info=company_info)
 
 
+
+
+# Run App
 if __name__ == "__main__":
     app.run()
