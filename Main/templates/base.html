@@ -6,6 +6,22 @@
 </head>
 
 <body>
+
+<div class="navbar">
+
+<a href="{{url_for('index')}}">Home</a>
+<a href="{{url_for('entries')}}">Entries</a>
+{% if not current_user.is_authenticated %}
+    <a href="{{url_for('login')}}">Login</a>
+    <a href="{{url_for('register')}}">Register</a>
+{% else %}
+    <a href="{{url_for('logout')}}">Logout</a>
+    <a href="{{url_for('profile')}}">Profile</a>
+{% endif %}
+
+</div>
+
+<div class="flash_messages">
 {% with messages = get_flashed_messages() %}
     {% if messages %}
         {% for message in messages%}
@@ -13,9 +29,10 @@
         {% endfor %}
     {% endif %}
 {% endwith %}
+</div>
+
+
 {% block content %}
-
-
 {% endblock %}
     
 

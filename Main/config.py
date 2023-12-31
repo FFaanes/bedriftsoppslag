@@ -6,5 +6,5 @@ def app_setup():
     app.config["SECRET_KEY"] = "-"
     app.config["HOST"] = "localhost"
     app.config["PORT"] = 5000
-    app.config["DEBUG"] = False
+    app.config["DEBUG"] = True
     return app

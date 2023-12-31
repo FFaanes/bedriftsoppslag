@@ -3,3 +3,18 @@ html {
     background-color: rgb(167, 202, 169);
     font-family: 'Courier New', Courier, monospace;
 }
+
+.flash_messages {
+    background-color: rgba(20, 20, 20, 0.068);
+    border-radius: 5px;
+}
+
+.navbar {
+    background-color: rgba(20, 20, 20, 0.068);
+    display: flex;
+    justify-content: center;
+}
+
+.navbar a {
+    padding: 0px 20px 0px 20px
+}
