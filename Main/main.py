@@ -84,15 +84,10 @@ class LoginForm(FlaskForm):
     
 
 
-
 # Index Route
 @app.route("/", methods=["GET","POST"])
 def index():
-    if request.method == "POST":
-        company_name_or_code = request.form.get("company_name_or_code")
-        return redirect(f"/company/{company_name_or_code}")
-    else:
-        return render_template("index/index.html")
+    return render_template("index/index.html")
 
 
 
