@@ -1,15 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <form method="POST" action="">
-        {{form.hidden_tag()}}
-        {% if org_nr %}
-            {{form.org_nr(value=org_nr)}}
-        {% else %}
-            {{form.org_nr}}
-        {% endif %}
-        {{form.password}}
-        {{form.c_password}}
-        {{form.submit}}
-    </form>
+    <div class="center_div">
+        <form class="form" method="POST" action="">
+            <p class="styled_text" style="text-align: center; font-weight: bolder;">Registrer</p>
+            {{form.hidden_tag()}}
+
+            {% if email %}
+            {{form.email(value=email)}}
+            {% else %}
+                {{form.email}}
+            {% endif %}
+
+            {% if org_nr %}
+                {{form.org_nr(value=org_nr)}}
+            {% else %}
+                {{form.org_nr}}
+            {% endif %}
+            {{form.password}}
+            {{form.c_password}}
+            {{form.submit(class_="form_submit_green")}}
+        </form>
+    </div>
 {% endblock %}

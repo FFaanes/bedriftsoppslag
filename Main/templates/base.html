@@ -13,6 +13,9 @@
     <div class="nav_left">
         <a style="font-size: larger;" href="{{url_for('index')}}">BedriftOppslag.no</a>
         <a href="{{url_for('entries')}}">Brukere</a>
+        {% if current_user.permission >= 0 %}
+            <a href="{{url_for('search_page')}}">Søk Etter Bedrift</a>
+        {% endif %}
     </div>
 
     <div class="nav_right">
@@ -20,8 +23,10 @@
             <a href="{{url_for('login')}}">Logg inn</a>
             <a href="{{url_for('register')}}">Registrer</a>
         {% else %}
-            <a href="{{url_for('logout')}}">Logg ut</a>
             <a href="{{url_for('profile')}}">Profil</a>
+        {% endif %}
+        {% if current_user.permission == 10 %}
+            <a href="{{url_for('admin')}}">Administrasjon</a>
         {% endif %}
     </div>
 
@@ -38,9 +43,11 @@
 {% endwith %}
 
 
-<div class="content_frame">
-    {% block content %}
-    {% endblock %}
+<div class="main_frame">
+    <div class="content_frame">
+        {% block content %}
+        {% endblock %}
+    </div>
 </div>
 
 </body>

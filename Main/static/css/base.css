@@ -4,13 +4,36 @@ html {
     font-size: 3vh;
     color: var(--lighter);
 
+    --darker: #111111;
     --dark: #1F1F1F;
-    --lighter: #FEFDFB;
+    --dark_transparent: #1f1f1fd0;
+    --lighter: #6e6e6e;
     --highlight: #5be469;
+    --red: rgb(240, 105, 105);
+    background-image: url("../img/background.png");
 }
 
+.styled_text {
+    color: var(--highlight);
+    text-decoration: none;
+    
+    background-image: linear-gradient(45deg, #f3e178, #db5656);
+    background-clip: text;
+    background-size: 100%;
+    transition: ease-in 0.2s;
+}
+
+.red_text {
+    color: var(--red);
+}
+
+.styled_text:hover {
+    color: rgba(255, 255, 255, 0);
+}
+
+
+
 body {
-    background-color: var(--dark);
     padding: 0px;
     margin: 0px;
 }
@@ -23,8 +46,9 @@ body {
 }
 
 .navbar {
-    background-color: var(--dark);
+    background-color: var(--dark_transparent);
     margin: 0px;
+    margin-bottom: 5vh;
     height: 8vh;
 }
 
@@ -57,7 +81,76 @@ body {
     color: rgba(255, 255, 255, 0);
 }
 
+.center_div {
+    margin: auto;
+}
+
+.form {
+    background-color: var(--dark_transparent);
+    margin: auto;
+    width: 30%;
+
+    border: 1px solid var(--highlight);
+    border-radius: 10px;
+    padding: 20px;
+    padding-bottom: 40px;
+}
+
+.form input {
+    margin: auto;
+    margin-bottom: 5px;
+    display: block;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2vh;
+
+    height: 25px;
+    width: 60%;
+    border: 1px solid #161616;
+    border-radius: 7px;
+    padding-left: 15px;
+}
+
+.form input::placeholder {
+    text-align: center;
+}
+
+
+.form_submit_green {
+    background-color: var(--highlight);
+    transition: ease-in 0.1s;
+}
+
+.form_submit_red {
+    background-color: rgb(240, 105, 105);
+    transition: ease-in 0.1s;
+}
+
+.form_submit_green:hover {
+    background-color: #a3f1ab;
+    cursor: pointer;
+}
+
+.form_submit_red:hover {
+    background-color: rgb(224, 148, 148);
+    cursor: pointer;
+}
+
+
+.main_frame {
+    border-radius: 10px;
+    width: 90%;
+    margin: auto;
+}
 
 .content_frame {
-    padding: 0px 5% 0px 5%;
+    background-color: var(--dark_transparent);
+    border-radius: 10px;
+    width: 100%;
+    padding: 5vh;
+}
+
+td {
+    padding: 5px 15px 5px 15px;
+    border: 1px solid var(--darker);
 }

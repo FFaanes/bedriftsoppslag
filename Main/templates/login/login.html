@@ -2,14 +2,13 @@
 
 
 {% block content %}
-    <form method="POST" action="">
-        {{form.hidden_tag()}}
-        {% if org_nr %}
-            {{form.org_nr(value=org_nr)}}
-        {% else %}
-            {{form.org_nr}}
-        {% endif %}
-        {{form.password}}
-        {{form.submit}}
-    </form>
+    <div class="center_div">
+        <form class="form" method="POST" action="">
+            <p class="styled_text" style="text-align: center; font-weight: bolder;">Logg Inn</p>
+            {{form.hidden_tag()}}
+            {{form.email}}
+            {{form.password}}
+            {{form.submit(class_="form_submit_green")}}
+        </form>
+    </div>
 {% endblock %}

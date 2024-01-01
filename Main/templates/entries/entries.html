@@ -2,10 +2,24 @@
 
 
 {% block content %}
-{% for entry in users %}
+<table>
+    <thead>
+        <td class="styled_text">Navn</td>
+        <td class="styled_text">Org. Nr</td>
+        <td class="styled_text">E-Post</td>
+        <td class="styled_text">Registrert</td>
+        <td class="styled_text">Tillatelser</td>
+    </thead>
+    {% for entry in users %}
+    <tr>
+        <td>{{entry["company_name"]}}</td>
+        <td>{{entry["company_number"]}}</td>
+        <td>{{entry["email"]}}</td>
+        <td>{{entry["register"]}}</td>
+        <td>{{entry["permission"]}}</td>
+    </tr>
+    {% endfor %}
+</table>
 
-<p>{{entry}}</p>
-
-{% endfor %}
 
 {% endblock %}

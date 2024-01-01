@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+
+{% block navigation_bar_links %}
+{% endblock %}
+
+{% block content %}
+<h1>{{current_user.company_name}}<span style="font-size: 20px; margin-left: 20px;">({{current_user.company_number}})</span></h1>
+<p>Søk side</p>
+<a class="styled_text" href="{{url_for('logout')}}">Logg ut</a>
+
+{% endblock %}
