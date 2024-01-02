@@ -95,6 +95,9 @@ class LoginForm(FlaskForm):
                 raise ValidationError("Password is incorrect")
     
 
+class CompanySearchForm(FlaskForm):
+    query = StringField(validators=[InputRequired()])
+    submit = SubmitField("Søk")
 
 
 # Index Route
@@ -107,7 +110,7 @@ def index():
 # Register Page
 @app.route("/register", methods=["GET","POST"])
 def register():
-    form = RegisterForm()
+    form = RegisterForm()   
     if form.validate_on_submit():
         org_name = query_company(form.org_nr.data)
 
@@ -156,10 +159,15 @@ def profile():
 
 
 # Company page for testing functionality of querycompany
-@app.route("/søk")
+@app.route("/søk", methods=["GET","POST"])
 @login_required
 def search_page():
-    return render_template("search_page/search_page.html")
+    form = CompanySearchForm()
+
+    if form.validate_on_submit():
+        search_query = form.query.data
+        return redirect(url_for("company_search", company=search_query))
+    return render_template("search_page/search_page.html", form=form)
 
 
 # Company page for testing functionality of querycompany

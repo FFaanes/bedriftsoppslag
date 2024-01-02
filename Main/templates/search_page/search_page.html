@@ -5,8 +5,12 @@
 {% endblock %}
 
 {% block content %}
-<h1>{{current_user.company_name}}<span style="font-size: 20px; margin-left: 20px;">({{current_user.company_number}})</span></h1>
-<p>Søk side</p>
-<a class="styled_text" href="{{url_for('logout')}}">Logg ut</a>
-
+<div class="center_div">
+    <form class="form" method="POST" action="">
+        <p class="styled_text" style="text-align: center; font-weight: bolder;">Søk Etter Bedrift</p>
+        {{form.hidden_tag()}}
+        {{form.query}}
+        {{form.submit(class_="form_submit_green")}}
+    </form>
+</div>
 {% endblock %}

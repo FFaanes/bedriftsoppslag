@@ -35,7 +35,7 @@ def get_external_info(company_name, validate_emails=False):
         # Perform a Google search for the company name
         company_name = company_name.lower().replace("as", "").strip() # Remove AS
         company_name = company_name.lower().replace("sa", "").strip() # Remove SA
-        companyname_stripped = str(company_name).replace(" ", "")
+        companyname_stripped = str(company_name).replace(" ", "").replace("@","")
         query = f"{company_name} contact"
         search_results = search(query, num_results=1)
         website = next(search_results)
@@ -71,7 +71,9 @@ def get_external_info(company_name, validate_emails=False):
         email_hosts = ["hotmail", "gmail"]
 
         # Split email to attempt emails such as name@lastname.no
+        company_name = company_name.replace("@","")
         company_name_split = company_name.split(" ")
+        print(company_name_split)
         first_name = ""
         last_name = ""
         if len(company_name_split) == 2:

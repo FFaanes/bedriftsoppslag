@@ -6,7 +6,7 @@ html {
 
     --darker: #111111;
     --dark: #1F1F1F;
-    --dark_transparent: #1f1f1fd0;
+    --dark_transparent: #262626d0;
     --lighter: #6e6e6e;
     --highlight: #5be469;
     --red: rgb(240, 105, 105);
@@ -31,7 +31,9 @@ html {
     color: rgba(255, 255, 255, 0);
 }
 
-
+.highlight_border {
+    border: 1px solid var(--highlight)
+}
 
 body {
     padding: 0px;
@@ -88,7 +90,7 @@ body {
 .form {
     background-color: var(--dark_transparent);
     margin: auto;
-    width: 30%;
+    width: 40%;
 
     border: 1px solid var(--highlight);
     border-radius: 10px;
@@ -146,7 +148,8 @@ body {
 .content_frame {
     background-color: var(--dark_transparent);
     border-radius: 10px;
-    width: 100%;
+    margin: auto;
+    width: 90%;
     padding: 5vh;
 }
 
