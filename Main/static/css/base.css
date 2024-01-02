@@ -150,6 +150,7 @@ body {
     border-radius: 10px;
     margin: auto;
     width: 90%;
+    min-height: 70vh;
     padding: 5vh;
 }
 

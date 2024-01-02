@@ -34,44 +34,9 @@ db = SQLAlchemy(app)
 
 
 
-# User
-class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    company_number = db.Column(db.Integer, nullable=False, unique=True)
-    company_name = db.Column(db.String(100), nullable=False)
-    company_email = db.Column(db.String(50), nullable=False)
-    register_date = db.Column(db.String(30), nullable=False)
-    password_hash = db.Column(db.String(200), nullable=False)
-    permission = db.Column(db.Integer)
 
 
-    
-# Register Form
-class RegisterForm(FlaskForm):
-    email = EmailField(validators=[InputRequired()] ,render_kw={"placeholder":"E-post"})
-    org_nr = StringField(validators=[InputRequired(), Length(min=9, max=9)], render_kw={"placeholder":"Org. Nummer"})
-    password = PasswordField(validators=[InputRequired(),Length(min=1, max=20), EqualTo("c_password", message="Passord må være like!")], render_kw={"placeholder":"Passord"})
-    c_password = PasswordField(validators=[InputRequired(),Length(min=1, max=20)], render_kw={"placeholder":"Bekreft Passord"})
-    submit = SubmitField("Registrer")
 
-    def validate_email(form, field):
-        user = User.query.filter_by(company_email=field.data).first()
-        if user:
-            flash("Email already registered.")
-            raise ValidationError("Email already registered.")
-
-    def validate_org_nr(form, field):
-        # Check if organisation number exists in database.
-        user = User.query.filter_by(company_number=field.data).first()
-        if user:
-            flash("User already registered.")
-            raise ValidationError("User already registered.")
-        
-        # Check if the company number exists in the register
-        org_name = query_company(field.data)
-        if org_name == None:
-            flash("Company number not valid")
-            raise ValidationError("Company number not valid")
 
 # Login Form
 class LoginForm(FlaskForm):
@@ -83,21 +48,85 @@ class LoginForm(FlaskForm):
         email = str(field.data).lower()
         user = User.query.filter_by(company_email=email).first()
         if not user:
-            flash("Company not registered")
-            raise ValidationError("Company not registered")
+            flash("Bedrift er ikke registrert")
+            raise ValidationError("Bedrift er ikke registrert")
         
     def validate_password(form, field):
         email = str(form.email.data).lower()
         user = User.query.filter_by(company_email=email).first()
         if user:
             if not bcrypt.check_password_hash(user.password_hash, field.data):
-                flash("Password is incorrect")
-                raise ValidationError("Password is incorrect")
-    
+                flash("Feil passord")
+                raise ValidationError("Feil passord")
 
+
+# Register Form
+class RegisterForm(FlaskForm):
+    email = EmailField(validators=[InputRequired()] ,render_kw={"placeholder":"E-post"})
+    org_nr = StringField(validators=[InputRequired(), Length(min=9, max=9)], render_kw={"placeholder":"Org. Nummer"})
+    password = PasswordField(validators=[InputRequired(),Length(min=1, max=20), EqualTo("c_password", message="Passord må være like!")], render_kw={"placeholder":"Passord"})
+    c_password = PasswordField(validators=[InputRequired(),Length(min=1, max=20)], render_kw={"placeholder":"Bekreft Passord"})
+    submit = SubmitField("Registrer")
+
+    def validate_email(form, field):
+        user = User.query.filter_by(company_email=field.data).first()
+        if user:
+            flash("Email er allerede registrert")
+            raise ValidationError("Email er allerede registrert")
+
+    def validate_org_nr(form, field):
+        # Check if organisation number exists in database.
+        user = User.query.filter_by(company_number=field.data).first()
+        if user:
+            flash("Bruker er allerede registrert")
+            raise ValidationError("Bruker er allerede registrert")
+        
+        # Check if the company number exists in the register
+        org_name = query_company(field.data)
+        if org_name == None:
+            flash("Org. Nummer finnes ikke")
+            raise ValidationError("Org. Nummer finnes ikke")
+        
+
+# Form for querying company
 class CompanySearchForm(FlaskForm):
-    query = StringField(validators=[InputRequired()])
+    query = StringField(validators=[InputRequired()], render_kw={"placeholder":"Org. Nr / Navn"})
     submit = SubmitField("Søk")
+
+
+# Form to edit user
+class UserManagementForm(FlaskForm):
+    email = StringField("Email")
+    name = StringField("Name")
+    permission = StringField("Permission")
+    submit = SubmitField("Godta")
+
+    verify_delete = StringField(render_kw={"placeholder":"BEKREFT"})
+    delete = SubmitField("Slett Bruker")
+
+
+
+
+
+
+
+
+# User
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    company_number = db.Column(db.Integer, nullable=False, unique=True)
+    company_name = db.Column(db.String(100), nullable=False)
+    company_email = db.Column(db.String(50), nullable=False)
+    register_date = db.Column(db.String(30), nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
+    permission = db.Column(db.Integer)
+
+
+
+
+
+
+
 
 
 # Index Route
@@ -174,9 +203,10 @@ def search_page():
 @app.route("/bedrift/<company>")
 @login_required
 def company_search(company):
-    company_info = query_company(company, validate_emails=False)
+    company_info = query_company(company, validate_emails=True)
     if company_info == None:
-        return redirect("/")
+        flash("Fant ikke bedrift")
+        return redirect(url_for("search_page"))
     return render_template("company/company.html", company_info=company_info)
 
 
@@ -194,16 +224,6 @@ def admin():
     users = User.query.all()
 
     return render_template("admin/admin.html", users=users)
-
-
-class UserManagementForm(FlaskForm):
-    email = StringField("Email")
-    name = StringField("Name")
-    permission = StringField("Permission")
-    submit = SubmitField("Godta")
-
-    verify_delete = StringField(render_kw={"placeholder":"BEKREFT"})
-    delete = SubmitField("Slett Bruker")
 
 
 @app.route("/admin/usermanagement/<company_number>", methods=["GET","POST"])
