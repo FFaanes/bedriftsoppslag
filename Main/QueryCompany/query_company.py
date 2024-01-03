@@ -73,7 +73,6 @@ def get_external_info(company_name, validate_emails=False):
         # Split email to attempt emails such as name@lastname.no
         company_name = company_name.replace("@","")
         company_name_split = company_name.split(" ")
-        print(company_name_split)
         first_name = ""
         last_name = ""
         if len(company_name_split) == 2:

@@ -12,7 +12,8 @@ from wtforms.validators import InputRequired, Length, ValidationError, EqualTo
 from config import app_setup
 from QueryCompany.query_company import query_company
 
-
+# ----------------------------------------------- Setup ----------------------------------------------------
+# Setup app / encryption
 app = app_setup()
 bcrypt = Bcrypt(app)
 
@@ -37,7 +38,7 @@ db = SQLAlchemy(app)
 
 
 
-
+# ----------------------------------------------- Forms ----------------------------------------------------
 # Login Form
 class LoginForm(FlaskForm):
     email = StringField(validators=[InputRequired()], render_kw={"placeholder":"E-Post"})
@@ -110,7 +111,7 @@ class UserManagementForm(FlaskForm):
 
 
 
-
+# ----------------------------------------------- Database Tables ----------------------------------------------------
 # User
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -128,7 +129,7 @@ class User(db.Model, UserMixin):
 
 
 
-
+# ----------------------------------------------- Routes ----------------------------------------------------
 # Index Route
 @app.route("/", methods=["GET","POST"])
 def index():
@@ -203,7 +204,7 @@ def search_page():
 @app.route("/bedrift/<company>")
 @login_required
 def company_search(company):
-    company_info = query_company(company, validate_emails=True)
+    company_info = query_company(company, validate_emails=False)
     if company_info == None:
         flash("Fant ikke bedrift")
         return redirect(url_for("search_page"))
@@ -215,7 +216,7 @@ def company_search(company):
 
 
 
-# ------------------------ ADMIN -------------------------
+# ----------------------------------------------- ADMIN ----------------------------------------------------
 @app.route("/admin")
 @login_required
 def admin():
@@ -281,6 +282,10 @@ def create_admin(username, password, user_id, email):
         db.session.add(user)
         db.session.commit()
 
-# Run App
+
+
+
+
+# ----------------------------------------------- Run App ----------------------------------------------------
 if __name__ == "__main__":
     app.run()

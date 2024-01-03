@@ -1,3 +1,8 @@
+# Feedback
+- Firebaze for oppbevaring av brukere
+- Lage querycompany til egen api-server
+
+
 
 # Oppsett
 
