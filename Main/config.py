@@ -26,4 +26,4 @@ def setup():
     login_manager = LoginManager()
     login_manager.login_view = "login"
 
-    return app, bcrypt,  login_manager
+    return app, bcrypt, login_manager

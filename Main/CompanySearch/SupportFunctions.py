@@ -1,5 +1,5 @@
-import os
 import re
+import os
 
 import requests
 import pandas as pd
@@ -9,9 +9,11 @@ from googlesearch import search
 from validate_email import validate_email
 from bs4 import BeautifulSoup
 
+#base_path = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+base_path = os.path.realpath(os.path.dirname(__file__))
 # ------------------------------ updating of new company information from brreg file --------------------------------------
 
-def generate_new_data(path_full_csv = "./data/alle_enheter.csv"):
+def generate_new_data(path_full_csv = os.path.join(base_path, "./data/alle_enheter.csv")):
     all = pd.read_csv(path_full_csv).replace(np.NaN, None)
     grouped = all.groupby(all.navn.str[0])
     for group in grouped:
@@ -30,7 +32,7 @@ def get_org_nr(value):
         except ValueError:
             pass
     else:
-        org_df = pd.read_csv(f"./data/{ord(value[0].lower())}.csv")
+        org_df = pd.read_csv(os.path.join(base_path, f"./data/{ord(value[0].lower())}.csv"))
         try:
             return int(org_df[org_df["navn"] == value.upper()].iat[0,0])
         except IndexError:

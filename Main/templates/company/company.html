@@ -2,12 +2,12 @@
 
 {% block content %}
 <div style="margin:30px">
-<h1>{{company_info["info"]["org_navn"]}}</h1>
-<h3>org. nr: {{company_info["info"]["org_nr"]}}</h3>
+<h1>{{company_info["brreg_info"]["org_navn"]}}</h1>
+<h3>org. nr: {{company_info["brreg_info"]["org_nr"]}}</h3>
 <hr>
 <h2>Info</h2>
-{% for item in company_info["info"] %}
-    <p>{{item}} : {{company_info["info"][item]}}</p>
+{% for item in company_info["brreg_info"] %}
+    <p>{{item}} : {{company_info["brreg_info"][item]}}</p>
 
 {% endfor %}
 
@@ -17,5 +17,14 @@
    <p>{{item}} : {{company_info["external_info"][item]}}</p>
 
 {% endfor %}
+
+
+<hr>
+<h2>Names</h2>
+{% for item in company_info["formatted_names"] %}
+   <p>{{item}} : {{company_info["formatted_names"][item]}}</p>
+
+{% endfor %}
+
 </div>
 {% endblock %}
