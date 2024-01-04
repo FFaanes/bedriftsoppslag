@@ -1,4 +1,7 @@
+from main import UserMixin
+from main import db
 
+# ----------------------------------------------- User Table ----------------------------------------------------#
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     company_number = db.Column(db.Integer, nullable=False, unique=True)

@@ -9,101 +9,99 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, EmailField
 from wtforms.validators import InputRequired, Length, ValidationError, EqualTo
 
-from config import app_setup
+from config import setup
 from QueryCompany.query_company import query_company
+import form as f
 
 # ----------------------------------------------- Setup ----------------------------------------------------
-# Setup app / encryption
-app = app_setup()
-bcrypt = Bcrypt(app)
 
-# Login Management
-login_manager = LoginManager()
+# Main setup
+app, bcrypt, login_manager = setup()
 login_manager.init_app(app)
-login_manager.login_view = "login"
+db = SQLAlchemy(app)
 
+# Function to retrieve id of current user
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Setup Database
-basedir = os.path.abspath(os.path.dirname(__file__))
-app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{os.path.join(basedir, 'database.db')}"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
 
-
-
-
-
-
-
+def queryUserTable(value):
+    user = User.query.filter_by(company_email=value).first()
+    if not user:
+        user = User.query.filter_by(company_number=value).first()
+    if user:
+        return user
+    else:
+        return None
+    
+    
 # ----------------------------------------------- Forms ----------------------------------------------------
 # Login Form
-class LoginForm(FlaskForm):
-    email = StringField(validators=[InputRequired()], render_kw={"placeholder":"E-Post"})
-    password = PasswordField(validators=[InputRequired(), Length(min=1, max=20)], render_kw={"placeholder":"Passord"})
-    submit = SubmitField("Logg Inn")
+# class LoginForm(FlaskForm):
+#     email = StringField(validators=[InputRequired()], render_kw={"placeholder":"E-Post"})
+#     password = PasswordField(validators=[InputRequired(), Length(min=1, max=20)], render_kw={"placeholder":"Passord"})
+#     submit = SubmitField("Logg Inn")
 
-    def validate_email(form, field):
-        email = str(field.data).lower()
-        user = User.query.filter_by(company_email=email).first()
-        if not user:
-            flash("Bedrift er ikke registrert")
-            raise ValidationError("Bedrift er ikke registrert")
+#     def validate_email(form, field):
+#         email = str(field.data).lower()
+#         user = User.query.filter_by(company_email=email).first()
+#         if not user:
+#             flash("Bedrift er ikke registrert")
+#             raise ValidationError("Bedrift er ikke registrert")
         
-    def validate_password(form, field):
-        email = str(form.email.data).lower()
-        user = User.query.filter_by(company_email=email).first()
-        if user:
-            if not bcrypt.check_password_hash(user.password_hash, field.data):
-                flash("Feil passord")
-                raise ValidationError("Feil passord")
+#     def validate_password(form, field):
+#         email = str(form.email.data).lower()
+#         user = User.query.filter_by(company_email=email).first()
+#         if user:
+#             if not bcrypt.check_password_hash(user.password_hash, field.data):
+#                 flash("Feil passord")
+#                 raise ValidationError("Feil passord")
 
 
-# Register Form
-class RegisterForm(FlaskForm):
-    email = EmailField(validators=[InputRequired()] ,render_kw={"placeholder":"E-post"})
-    org_nr = StringField(validators=[InputRequired(), Length(min=9, max=9)], render_kw={"placeholder":"Org. Nummer"})
-    password = PasswordField(validators=[InputRequired(),Length(min=1, max=20), EqualTo("c_password", message="Passord må være like!")], render_kw={"placeholder":"Passord"})
-    c_password = PasswordField(validators=[InputRequired(),Length(min=1, max=20)], render_kw={"placeholder":"Bekreft Passord"})
-    submit = SubmitField("Registrer")
+# # Register Form
+# class RegisterForm(FlaskForm):
+#     email = EmailField(validators=[InputRequired()] ,render_kw={"placeholder":"E-post"})
+#     org_nr = StringField(validators=[InputRequired(), Length(min=9, max=9)], render_kw={"placeholder":"Org. Nummer"})
+#     password = PasswordField(validators=[InputRequired(),Length(min=1, max=20), EqualTo("c_password", message="Passord må være like!")], render_kw={"placeholder":"Passord"})
+#     c_password = PasswordField(validators=[InputRequired(),Length(min=1, max=20)], render_kw={"placeholder":"Bekreft Passord"})
+#     submit = SubmitField("Registrer")
 
-    def validate_email(form, field):
-        user = User.query.filter_by(company_email=field.data).first()
-        if user:
-            flash("Email er allerede registrert")
-            raise ValidationError("Email er allerede registrert")
+#     def validate_email(form, field):
+#         user = User.query.filter_by(company_email=field.data).first()
+#         if user:
+#             flash("Email er allerede registrert")
+#             raise ValidationError("Email er allerede registrert")
 
-    def validate_org_nr(form, field):
-        # Check if organisation number exists in database.
-        user = User.query.filter_by(company_number=field.data).first()
-        if user:
-            flash("Bruker er allerede registrert")
-            raise ValidationError("Bruker er allerede registrert")
+#     def validate_org_nr(form, field):
+#         # Check if organisation number exists in database.
+#         user = User.query.filter_by(company_number=field.data).first()
+#         if user:
+#             flash("Bruker er allerede registrert")
+#             raise ValidationError("Bruker er allerede registrert")
         
-        # Check if the company number exists in the register
-        org_name = query_company(field.data)
-        if org_name == None:
-            flash("Org. Nummer finnes ikke")
-            raise ValidationError("Org. Nummer finnes ikke")
+#         # Check if the company number exists in the register
+#         org_name = query_company(field.data)
+#         if org_name == None:
+#             flash("Org. Nummer finnes ikke")
+#             raise ValidationError("Org. Nummer finnes ikke")
         
 
-# Form for querying company
-class CompanySearchForm(FlaskForm):
-    query = StringField(validators=[InputRequired()], render_kw={"placeholder":"Org. Nr / Navn"})
-    submit = SubmitField("Søk")
+# # Form for querying company
+# class CompanySearchForm(FlaskForm):
+#     query = StringField(validators=[InputRequired()], render_kw={"placeholder":"Org. Nr / Navn"})
+#     submit = SubmitField("Søk")
 
 
-# Form to edit user
-class UserManagementForm(FlaskForm):
-    email = StringField("Email")
-    name = StringField("Name")
-    permission = StringField("Permission")
-    submit = SubmitField("Godta")
+# # Form to edit user
+# class UserManagementForm(FlaskForm):
+#     email = StringField("Email")
+#     name = StringField("Name")
+#     permission = StringField("Permission")
+#     submit = SubmitField("Godta")
 
-    verify_delete = StringField(render_kw={"placeholder":"BEKREFT"})
-    delete = SubmitField("Slett Bruker")
+#     verify_delete = StringField(render_kw={"placeholder":"BEKREFT"})
+#     delete = SubmitField("Slett Bruker")
 
 
 
@@ -140,7 +138,7 @@ def index():
 # Register Page
 @app.route("/register", methods=["GET","POST"])
 def register():
-    form = RegisterForm()   
+    form = f.RegisterForm()   
     if form.validate_on_submit():
         org_name = query_company(form.org_nr.data)
 
@@ -162,7 +160,7 @@ def register():
 # Login Page
 @app.route("/login", methods=["GET","POST"])
 def login():
-    form = LoginForm()
+    form = f.LoginForm()
 
     if form.validate_on_submit():
         email = str(form.email.data).lower()
@@ -192,7 +190,7 @@ def profile():
 @app.route("/søk", methods=["GET","POST"])
 @login_required
 def search_page():
-    form = CompanySearchForm()
+    form = f.CompanySearchForm()
 
     if form.validate_on_submit():
         search_query = form.query.data
@@ -230,7 +228,7 @@ def admin():
 @app.route("/admin/usermanagement/<company_number>", methods=["GET","POST"])
 @login_required
 def usermanagement(company_number):
-    form = UserManagementForm()
+    form = f.UserManagementForm()
     if current_user.permission != 10:
         return redirect(url_for("index"))
     
