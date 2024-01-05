@@ -8,6 +8,7 @@ from flask_login import UserMixin, login_user, login_required, logout_user, curr
 
 from config import setup
 from CompanySearch import search_company
+import functions
 
 # ----------------------------------------------- Setup ----------------------------------------------------
 
@@ -112,10 +113,10 @@ def company_search(company):
 
     # If the company search is a dataframe (if there was no result on search)
     if isinstance(company_info, pd.DataFrame):
-        companies = []
-        for i in range(len(company_info)):
-            companies.append((company_info.loc[i,"organisasjonsnummer"], company_info.loc[i,"navn"]))
-        return render_template("company/company.html",  company_info = None,
+        companies = [(company_info.loc[i,"organisasjonsnummer"], company_info.loc[i,"navn"]) for i in range(len(company_info))]
+        
+        return render_template("company/company.html",  closest_results = functions.find_similar_companies(company, company_info),
+                                                        company_info = None,
                                                         companies = companies,
                                                         len_companies = str(f"{len(companies):,}"))
     
