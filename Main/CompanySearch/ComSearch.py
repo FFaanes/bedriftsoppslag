@@ -1,8 +1,11 @@
 from .SupportFunctions import get_org_nr, get_brreg_info, format_company_name, generate_suggested_emails, check_emails, get_external_info
+import pandas as pd
 
 def search_company(company, validate_emails = False):
     # Get Org. Nr.
     org_nr = get_org_nr(company)
+    if isinstance(org_nr, pd.DataFrame):
+        return org_nr
     if not org_nr:
         return None
     

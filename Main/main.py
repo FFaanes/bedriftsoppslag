@@ -1,5 +1,6 @@
 import os
 from datetime import date
+import pandas as pd
 
 from flask import render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -108,10 +109,21 @@ def search_page():
 @login_required
 def company_search(company):
     company_info = search_company(company, validate_emails=False)
-    if company_info == None:
-        flash("Fant ikke bedrift")
-        return redirect(url_for("search_page"))
-    return render_template("company/company.html", company_info=company_info)
+
+    # If the company search is a dataframe (if there was no result on search)
+    if isinstance(company_info, pd.DataFrame):
+        companies = []
+        for i in range(len(company_info)):
+            companies.append((company_info.loc[i,"organisasjonsnummer"], company_info.loc[i,"navn"]))
+        return render_template("company/company.html",  company_info = None,
+                                                        companies = companies,
+                                                        len_companies = str(f"{len(companies):,}"))
+    
+    # If the company was found, display company page
+    if company_info:
+        return render_template("company/company.html",  company_info = company_info,
+                                                        companies = None)
+    
 
 
 
