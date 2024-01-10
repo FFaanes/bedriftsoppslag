@@ -13,7 +13,7 @@ def len_shared_letters(search, other):
 
 # Uses shared letters to calculate how many letters each company shares
 # This is then sorted with the top 5 companies that shares the most letters.
-def find_similar_companies(search ,company_info):
+def find_similar_companies_OLD(search ,company_info):
     len_letters = []
     for i in range(len(company_info)):
         len_letters.append({"organisasjonsnummer" : company_info.loc[i, "organisasjonsnummer"],
@@ -23,3 +23,15 @@ def find_similar_companies(search ,company_info):
     return sorted(len_letters, key=lambda d: d['shared_letters'],reverse=True)[:5]
 
 
+# Find similar search results using difflib library, returns a list of
+# x similiar companies with a similarity score, sorted from high similarity to lowest.
+from difflib import SequenceMatcher
+def find_similar_companies(search, company_info, results):
+    company_info["similarity_score"] = company_info["navn"].apply(lambda e: SequenceMatcher(None, search.upper(), e).ratio())
+    sorted_df = company_info.sort_values(by=["similarity_score"], ascending=False)
+
+    closest_results = [{"organisasjonsnummer" : sorted_df.iloc[i]["organisasjonsnummer"],
+                        "navn": sorted_df.iloc[i]["navn"],
+                        "similarity_score" : sorted_df.iloc[i]["similarity_score"]} for i in range(results)]
+        
+    return sorted(closest_results, key=lambda d: d['similarity_score'], reverse=True)

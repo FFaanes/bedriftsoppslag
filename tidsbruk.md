@@ -6,3 +6,5 @@
     31.december 2023: 3 timer
     
     01.januar 2024: 4 timer
+    02.januar 2024: 3 timer
+    

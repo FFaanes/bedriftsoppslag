@@ -115,7 +115,7 @@ def company_search(company):
     if isinstance(company_info, pd.DataFrame):
         companies = [(company_info.loc[i,"organisasjonsnummer"], company_info.loc[i,"navn"]) for i in range(len(company_info))]
         
-        return render_template("company/company.html",  closest_results = functions.find_similar_companies(company, company_info),
+        return render_template("company/company.html",  closest_results = functions.find_similar_companies(company, company_info, 3),
                                                         company_info = None,
                                                         companies = companies,
                                                         len_companies = str(f"{len(companies):,}"))
@@ -125,6 +125,9 @@ def company_search(company):
         return render_template("company/company.html",  company_info = company_info,
                                                         companies = None)
     
+    # THIS IS A TEMPORARY SOLUTION
+    flash("En feil har skjedd")
+    return redirect(url_for("search_page"))
 
 
 
