@@ -60,8 +60,8 @@ def format_company_name(brreg_info):
     name_formats["original_name"] = brreg_info["org_navn"]
     name_formats["clean_name"] = brreg_info["org_navn"].replace(" KONKURSBO","").replace(" AS","").replace(" SA","").replace(" DA","").replace(" ASA","")
 
-    if len(name_formats["original_name"].split(" ")) == 2:
-        name_formats["split_name"] = name_formats["original_name"].split(" ")
+    if len(name_formats["clean_name"].split(" ")) == 2:
+        name_formats["split_name"] = name_formats["clean_name"].split(" ")
         return name_formats
     else:
         name_formats["split_name"] = None
