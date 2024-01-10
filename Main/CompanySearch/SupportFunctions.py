@@ -115,7 +115,7 @@ def check_emails(email_list):
 # ----------------------------- Use google to gather external info --------------------------------------
 def get_external_info(clean_name):
     g_search = next(search(f"{clean_name} contact", num_results=1))
-    req = requests.get(g_search, headers={"User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"})
+    req = requests.get(g_search, headers={"User-Agent" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2.1 Safari/605.1.15"}, verify=False)
     soup = BeautifulSoup(req.text, 'html.parser')
     email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
