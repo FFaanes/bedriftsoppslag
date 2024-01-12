@@ -4,7 +4,7 @@
 
 
 
-   {% if companies %}
+   {% if closest_results %}
       <a class="red_text" href="{{url_for('search_page')}}">Tilbake</a>
       <h1 class="red_text">Fant ikke bedrift</h1>
       <hr>
@@ -13,11 +13,6 @@
          <p>{{company["organisasjonsnummer"]}}  |   {{company["navn"]}}   |  <a class="styled_text" href="{{url_for('company_search', company=company['organisasjonsnummer'])}}">→</a></p>
       {% endfor %}
       <hr>
-
-      <p class="styled_text">Under er {{len_companies}} bedrifter som starter på {{companies[0][1][0]}}</p>
-      {% for company in companies %}
-         <p>{{company[0]}}  |   {{company[1]}}   |  <a class="styled_text" href="{{url_for('company_search', company=company[0])}}">→</a></p>
-      {% endfor %}
 
    {% elif company_info %}
          <div style="margin:30px">

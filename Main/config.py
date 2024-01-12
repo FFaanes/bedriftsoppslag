@@ -5,14 +5,16 @@ from flask_bcrypt import Bcrypt
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
+# Config Variables
+HOST = "127.0.0.1"
+PORT = 5001
+DEBUG = True
+
 
 def setup():
     # APP setup
     app = Flask(__name__, template_folder="templates", static_folder="static")
     app.config["SECRET_KEY"] = "-"
-    app.config["HOST"] = "localhost"
-    app.config["PORT"] = 5000
-    app.config["DEBUG"] = True
 
     # Bcrypt
     bcrypt = Bcrypt(app)

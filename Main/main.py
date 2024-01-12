@@ -1,4 +1,5 @@
 import os
+import requests
 from datetime import date
 import pandas as pd
 
@@ -6,9 +7,8 @@ from flask import render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, login_required, logout_user, current_user
 
-from config import setup
+from config import setup, HOST, PORT, DEBUG
 from CompanySearch import search_company
-import functions
 
 # ----------------------------------------------- Setup ----------------------------------------------------
 
@@ -21,6 +21,8 @@ db = SQLAlchemy(app)
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, user_id)
+
+api_key = {"api-key":"test_api_key"}
 
 
 
@@ -109,19 +111,19 @@ def search_page():
 @app.route("/bedrift/<company>")
 @login_required
 def company_search(company):
-    company_info = search_company(company, validate_emails=False)
+    # TEMPORARY SOLUTION - If endpoint is reached, use api.
+    try:
+        company_info = requests.get(f"http://127.0.0.1:5000/bedrift/{company}", headers=api_key).json()
+    except requests.exceptions.ConnectionError:
+        print("No connection to api, using local solution!")
+        company_info = search_company(company, validate_emails=False)
 
-    # If the company search is a dataframe (if there was no result on search)
-    if isinstance(company_info, pd.DataFrame):
-        companies = [(company_info.loc[i,"organisasjonsnummer"], company_info.loc[i,"navn"]) for i in range(len(company_info))]
-        
-        return render_template("company/company.html",  closest_results = functions.find_similar_companies(company, company_info, 3),
-                                                        company_info = None,
-                                                        companies = companies,
-                                                        len_companies = str(f"{len(companies):,}"))
+    if type(company_info) == list:
+        return render_template("company/company.html",  closest_results = company_info,
+                                                        company_info = None)
     
     # If the company was found, display company page
-    if company_info:
+    if type(company_info) == dict:
         return render_template("company/company.html",  company_info = company_info,
                                                         companies = None)
     
@@ -205,8 +207,7 @@ def create_admin(username, password, user_id, email):
 
 
 
-
 # ----------------------------------------------- Run App ----------------------------------------------------
 if __name__ == "__main__":
     import form as f
-    app.run()
+    app.run(host=HOST, port=PORT, debug=DEBUG)

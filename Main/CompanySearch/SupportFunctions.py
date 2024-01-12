@@ -122,3 +122,16 @@ def get_external_info(clean_name):
     # Return webiste, list of emails and response code
     return {"website":g_search, "emails": list(set(re.findall(email_pattern, soup.get_text()))), "restricted": False if req.status_code == 200 else True}
 
+
+# Find similar search results using difflib library, returns a list of
+# x similiar companies with a similarity score, sorted from high similarity to lowest.
+from difflib import SequenceMatcher
+def find_similar_companies(search, company_info, results):
+    company_info["similarity_score"] = company_info["navn"].apply(lambda e: SequenceMatcher(None, search.upper(), e).ratio())
+    sorted_df = company_info.sort_values(by=["similarity_score"], ascending=False)
+
+    closest_results = [{"organisasjonsnummer" : int(sorted_df.iloc[i]["organisasjonsnummer"]),
+                        "navn": str(sorted_df.iloc[i]["navn"]),
+                        "similarity_score" : float(sorted_df.iloc[i]["similarity_score"])} for i in range(results)]
+        
+    return sorted(closest_results, key=lambda d: d['similarity_score'], reverse=True)
