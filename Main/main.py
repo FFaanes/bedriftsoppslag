@@ -114,6 +114,7 @@ def company_search(company):
     # TEMPORARY SOLUTION - If endpoint is reached, use api.
     try:
         company_info = requests.get(f"http://127.0.0.1:5000/bedrift/{company}", headers=api_key).json()
+        print("using api")
     except requests.exceptions.ConnectionError:
         print("No connection to api, using local solution!")
         company_info = search_company(company, validate_emails=False)
