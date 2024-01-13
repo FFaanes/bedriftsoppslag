@@ -14,7 +14,7 @@
       {% endfor %}
       <hr>
 
-   {% elif company_info %}
+   {% else %}
          <div style="margin:30px">
             <h1>{{company_info["brreg_info"]["org_navn"]}}</h1>
             <h3>org. nr: {{company_info["brreg_info"]["org_nr"]}}</h3>

@@ -9,6 +9,8 @@ from flask_sqlalchemy import SQLAlchemy
 HOST = "127.0.0.1"
 PORT = 5001
 DEBUG = True
+API_HOST = "http://127.0.0.1:5000"
+API_KEY = "test_api_key"
 
 
 def setup():

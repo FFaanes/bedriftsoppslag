@@ -9,6 +9,7 @@ from flask_login import UserMixin, login_user, login_required, logout_user, curr
 
 from config import setup, HOST, PORT, DEBUG
 from CompanySearch import search_company
+from api_functions import api_request
 
 # ----------------------------------------------- Setup ----------------------------------------------------
 
@@ -21,8 +22,6 @@ db = SQLAlchemy(app)
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, user_id)
-
-api_key = {"api-key":"test_api_key"}
 
 
 
@@ -111,25 +110,20 @@ def search_page():
 @app.route("/bedrift/<company>")
 @login_required
 def company_search(company):
-    # TEMPORARY SOLUTION - If endpoint is reached, use api.
-    try:
-        company_info = requests.get(f"http://127.0.0.1:5000/bedrift/{company}", headers=api_key).json()
-        print("using api")
-    except requests.exceptions.ConnectionError:
-        print("No connection to api, using local solution!")
-        company_info = search_company(company, validate_emails=False)
 
+    # Fetch Company info from api, will use backup solution if connection fails.
+    company_info = api_request(route="/bedrift/", value=company, validate_emails=False, google_search_results=1)
+
+    # If no company was found, returns list of closest results.
     if type(company_info) == list:
-        return render_template("company/company.html",  closest_results = company_info,
-                                                        company_info = None)
+        return render_template("company/company.html",  closest_results = company_info)
     
     # If the company was found, display company page
     if type(company_info) == dict:
-        return render_template("company/company.html",  company_info = company_info,
-                                                        companies = None)
+        return render_template("company/company.html",  company_info = company_info,)
     
     # THIS IS A TEMPORARY SOLUTION
-    flash("En feil har skjedd")
+    flash("En feil har oppstått!")
     return redirect(url_for("search_page"))
 
 
