@@ -1,6 +1,6 @@
 from config import API_HOST, API_KEY
 import requests
-from CompanySearch.ComSearch import search_company
+from OrgOppslag import search_company
 
 # Requests API server for company info or similar companies
 # Will use backup solution if connection fails.

@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, login_required, logout_user, current_user
 
 from config import setup, HOST, PORT, DEBUG
-from CompanySearch import search_company
+from OrgOppslag import search_company
 from api_functions import api_request
 
 # ----------------------------------------------- Setup ----------------------------------------------------

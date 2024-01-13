@@ -2,7 +2,7 @@ from wtforms import EmailField, StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
 from flask import flash
 from flask_wtf import FlaskForm
-from CompanySearch import search_company
+from OrgOppslag import search_company
 
 from main import bcrypt
 from main import app, db, User
