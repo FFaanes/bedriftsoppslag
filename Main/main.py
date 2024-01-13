@@ -2,6 +2,7 @@ import os
 import requests
 from datetime import date
 import pandas as pd
+from urllib import parse
 
 from flask import render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -120,7 +121,8 @@ def company_search(company):
     
     # If the company was found, display company page
     if type(company_info) == dict:
-        return render_template("company/company.html",  company_info = company_info,)
+        iframe_src = f"https://maps.google.com/maps?width=300&amp;height=300&amp;hl=en&amp;q={parse.quote(company_info['brreg_info']['org_navn'])}+(My%20Business%20Name)&amp;t=h&amp;z=16&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
+        return render_template("company/company.html",  company_info=company_info, iframe_src=iframe_src)
     
     # THIS IS A TEMPORARY SOLUTION
     flash("En feil har oppstått!")

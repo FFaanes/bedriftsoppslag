@@ -16,11 +16,27 @@
 
    {% else %}
          <div style="margin:30px">
-            <h1>{{company_info["brreg_info"]["org_navn"]}}</h1>
-            <h3>org. nr: {{company_info["brreg_info"]["org_nr"]}}</h3>
+            
+            <h1 class="styled_text">{{company_info["brreg_info"]["org_navn"]}}<span style="font-size: 50%;">  ({{company_info["brreg_info"]["org_nr"]}})</span></h1>
+            <h3>{{company_info["brreg_info"]["org_form_beskrivelse"]}}<span style="font-size: 50%;">  ({{company_info["brreg_info"]["org_form_kode"]}})</span></h3>
+            <hr>
+
+            <iframe style="border-radius: 5%;" width="300" height="300" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="{{iframe_src}}"></iframe>
+            <p>{{company_info["brreg_info"]["forretningsadresse"]["adresse"][0]}}, {{company_info["brreg_info"]["forretningsadresse"]["postnummer"]}} {{company_info["brreg_info"]["forretningsadresse"]["poststed"]}}</p>
             <hr>
 
             <h2>Info</h2>
+            <p></p>
+            <p>Opprettelsesdato: {{company_info["brreg_info"]["registreringsdatoEnhetsregisteret"]}}</p>
+            <p>Ansatte: {{company_info["brreg_info"]["antallAnsatte"]}}</p>
+            <p>MVA registrert: {{company_info["brreg_info"]["registrertIMvaregisteret"]}}</p>
+
+            <h2>Avvikling:</h2>
+            <p>Under Avvikling: {{company_info["brreg_info"]["underAvvikling"]}}</p>
+            <p>Under Tvangs-oppløsning: {{company_info["brreg_info"]["underTvangsavviklingEllerTvangsopplosning"]}}</p>
+
+            <hr>
+            <hr>
             {% for item in company_info["brreg_info"] %}
                <p>{{item}} : {{company_info["brreg_info"][item]}}</p>
             {% endfor %}
@@ -30,12 +46,19 @@
             {% for item in company_info["external_info"] %}
                <p>{{item}} : {{company_info["external_info"][item]}}</p>
             {% endfor %}
-            <hr>
 
             <h2>Names</h2>
             {% for item in company_info["formatted_names"] %}
                <p>{{item}} : {{company_info["formatted_names"][item]}}</p>
             {% endfor %}
+
+
+            <h3>--- SUGGESTED EMAILS --- TEMPORARY</h3>
+            {% for email in company_info["suggested_emails"] %}
+               <p>{{email}}</p>
+            {% endfor %}
+            <hr>
+
          </div>
    {% endif %}
 {% endblock %}
