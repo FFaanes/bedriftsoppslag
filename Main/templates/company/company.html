@@ -21,26 +21,78 @@
             <h3>{{company_info["brreg_info"]["org_form_beskrivelse"]}}<span style="font-size: 50%;">  ({{company_info["brreg_info"]["org_form_kode"]}})</span></h3>
             <hr>
 
-            <iframe style="border-radius: 5%;" width="300" height="300" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="{{iframe_src}}"></iframe>
-            <p>{{company_info["brreg_info"]["forretningsadresse"]["adresse"][0]}}, {{company_info["brreg_info"]["forretningsadresse"]["postnummer"]}} {{company_info["brreg_info"]["forretningsadresse"]["poststed"]}}</p>
+            <iframe style="border-radius: 5%; width: 100%; height: 35vh;" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=300&amp;height=300&amp;hl=en&amp;q={{context['iframe_company_name']}}+(My%20Business%20Name)&amp;t=h&amp;z=16&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe>
+            <p>📌 {{company_info["brreg_info"]["forretningsadresse"]["adresse"][0]}}, {{company_info["brreg_info"]["forretningsadresse"]["postnummer"]}} {{company_info["brreg_info"]["forretningsadresse"]["poststed"]}}</p>
+            <hr>
+
+
+            <h1>Vi fant følgende informasjon</h1>
+            <h2>Nettsider:</h2>
+            <table>
+               {% for ws in company_info["external_info"]["website"] %}
+                  <tr>
+                     <td>🌐</td>
+                     <td><a class="styled_text" href="{{ws}}" target="_blank">{{ws}}</a></td>
+                  </tr>
+               {% endfor %}
+            </table>
+            <hr>
+
+            <h2>E-Post Adresser:</h2>
+            {% if context["len_emails"] == 0 %}
+               <p class="red_text">Fant ingen E-post adresser!</p>
+               <p class="red_text">Forsøk å se på nettsidene vi fant.</p>
+            {% else %}
+               {% for mail in company_info["external_info"]["emails"] %}
+               <table>
+                  <tr>
+                     <td>📧</td>
+                     <td><a class="styled_text" href="mailto:{{mail}}">{{mail}}</a></td>
+                  </tr>
+               {% endfor %}
+               </table>
+            {% endif %}
             <hr>
 
             <h2>Info</h2>
-            <p></p>
-            <p>Opprettelsesdato: {{company_info["brreg_info"]["registreringsdatoEnhetsregisteret"]}}</p>
-            <p>Ansatte: {{company_info["brreg_info"]["antallAnsatte"]}}</p>
-            <p>MVA registrert: {{company_info["brreg_info"]["registrertIMvaregisteret"]}}</p>
+            <table>
+               <tr>
+                  <td>📅</td>
+                  <td>Opprettelsesdato: {{company_info["brreg_info"]["registreringsdatoEnhetsregisteret"]}}</td>
+               </tr>
+               <tr>
+                  <td>👷🏼</td>
+                  <td>Ansatte: {{company_info["brreg_info"]["antallAnsatte"]}}</td>
+               </tr>
+               <tr>
+                  <td>📜</td>
+                  <td>MVA registrert: {{company_info["brreg_info"]["registrertIMvaregisteret"]}}</td>
+               </tr>
+            </table>
+            <hr>
+
 
             <h2>Avvikling:</h2>
-            <p>Under Avvikling: {{company_info["brreg_info"]["underAvvikling"]}}</p>
-            <p>Under Tvangs-oppløsning: {{company_info["brreg_info"]["underTvangsavviklingEllerTvangsopplosning"]}}</p>
+            <table>
+               <tr>
+                  <td>📛</td>
+                  <td>Under Avvikling: {{company_info["brreg_info"]["underAvvikling"]}}</td>
+               </tr>
+               <tr>
+                  <td>📛</td>
+                  <td>Under Tvangs-oppløsning: {{company_info["brreg_info"]["underTvangsavviklingEllerTvangsopplosning"]}}</td>
+               </tr>
+            </table>
+            <hr>
 
-            <hr>
-            <hr>
-            {% for item in company_info["brreg_info"] %}
-               <p>{{item}} : {{company_info["brreg_info"][item]}}</p>
-            {% endfor %}
-            <hr>
+
+
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <h3>--- TEMPORARY ----</h3>
 
             <h2>External Info</h2>
             {% for item in company_info["external_info"] %}
@@ -52,12 +104,16 @@
                <p>{{item}} : {{company_info["formatted_names"][item]}}</p>
             {% endfor %}
 
+            {% for item in company_info["brreg_info"] %}
+               <p>{{item}} : {{company_info["brreg_info"][item]}}</p>
+            {% endfor %}
+            <br>
 
-            <h3>--- SUGGESTED EMAILS --- TEMPORARY</h3>
             {% for email in company_info["suggested_emails"] %}
                <p>{{email}}</p>
             {% endfor %}
             <hr>
+
 
          </div>
    {% endif %}

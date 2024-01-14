@@ -113,7 +113,9 @@ def search_page():
 def company_search(company):
 
     # Fetch Company info from api, will use backup solution if connection fails.
-    company_info = api_request(route="/bedrift/", value=company, validate_emails=False, google_search_results=1)
+    company_info = api_request(route="/bedrift/", value=company, validate_emails=False, google_search_count=3)
+    context = {"len_emails" : len(company_info["external_info"]["emails"]),
+               "iframe_company_name" : parse.quote(company_info["brreg_info"]["org_navn"])}
 
     # If no company was found, returns list of closest results.
     if type(company_info) == list:
@@ -121,8 +123,7 @@ def company_search(company):
     
     # If the company was found, display company page
     if type(company_info) == dict:
-        iframe_src = f"https://maps.google.com/maps?width=300&amp;height=300&amp;hl=en&amp;q={parse.quote(company_info['brreg_info']['org_navn'])}+(My%20Business%20Name)&amp;t=h&amp;z=16&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
-        return render_template("company/company.html",  company_info=company_info, iframe_src=iframe_src)
+        return render_template("company/company.html",  company_info = company_info, context=context)
     
     # THIS IS A TEMPORARY SOLUTION
     flash("En feil har oppstått!")
