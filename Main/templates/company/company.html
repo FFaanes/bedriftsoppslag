@@ -6,28 +6,37 @@
 
    {% if closest_results %}
       <a class="red_text" href="{{url_for('search_page')}}">Tilbake</a>
-      <h1 class="red_text">Fant ikke bedrift</h1>
+      <h1 class="red_text">⛔ Fant ikke bedrift</h1>
       <hr>
       <p class="styled_text">Søkeforslag:</p>
-      {% for company in closest_results %}
-         <p>{{company["organisasjonsnummer"]}}  |   {{company["navn"]}}   |  <a class="styled_text" href="{{url_for('company_search', company=company['organisasjonsnummer'])}}">→</a></p>
-      {% endfor %}
+      <table>
+         {% for company in closest_results %}
+            <tr>
+               <td>💡</td>
+               <td>{{company["organisasjonsnummer"]}}</td>
+               <td><a class="styled_text" href="{{url_for('company_search', company=company['organisasjonsnummer'])}}">{{company["navn"]}}</a></td>
+               <td><a class="styled_text" href="{{url_for('company_search', company=company['organisasjonsnummer'])}}">→</a></td>
+            </tr>
+         {% endfor %}
+      </table>
       <hr>
 
    {% else %}
-         <div style="margin:30px">
+         <div style="margin:30px; width: 70%; margin: auto;">
             
-            <h1 class="styled_text">{{company_info["brreg_info"]["org_navn"]}}<span style="font-size: 50%;">  ({{company_info["brreg_info"]["org_nr"]}})</span></h1>
-            <h3>{{company_info["brreg_info"]["org_form_beskrivelse"]}}<span style="font-size: 50%;">  ({{company_info["brreg_info"]["org_form_kode"]}})</span></h3>
+            <h1 class="styled_text">{{company_info["brreg_info"]["org_navn"]}}  <span style="font-size: 50%;">{{company_info["brreg_info"]["org_nr"]}}</span></h1>
+            <h3>{{company_info["brreg_info"]["org_form_beskrivelse"]}}  <span style="font-size: 50%;">({{company_info["brreg_info"]["org_form_kode"]}})</span></h3>
             <hr>
 
-            <iframe style="border-radius: 5%; width: 100%; height: 35vh;" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=300&amp;height=300&amp;hl=en&amp;q={{context['iframe_company_name']}}+(My%20Business%20Name)&amp;t=h&amp;z=16&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe>
             <p>📌 {{company_info["brreg_info"]["forretningsadresse"]["adresse"][0]}}, {{company_info["brreg_info"]["forretningsadresse"]["postnummer"]}} {{company_info["brreg_info"]["forretningsadresse"]["poststed"]}}</p>
+            <div style="width: 100%; height:35vh; overflow: hidden; border-radius: 10px;">
+               <iframe style="width: 170%; height: 40vh; position: relative; left: -400px;" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=300&amp;height=300&amp;hl=en&amp;q={{company_info['context']['iframe_company_name']}}+(My%20Business%20Name)&amp;t=h&amp;z=16&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe>
+            </div>
             <hr>
 
 
-            <h1>Vi fant følgende informasjon</h1>
-            <h2>Nettsider:</h2>
+            <h2>Vi fant følgende informasjon</h2>
+            <h3>Nettsider:</h3>
             <table>
                {% for ws in company_info["external_info"]["website"] %}
                   <tr>
@@ -36,53 +45,63 @@
                   </tr>
                {% endfor %}
             </table>
+            <br>
             <hr>
 
-            <h2>E-Post Adresser:</h2>
-            {% if context["len_emails"] == 0 %}
-               <p class="red_text">Fant ingen E-post adresser!</p>
-               <p class="red_text">Forsøk å se på nettsidene vi fant.</p>
+            <h3>E-Post Adresser:</h3>
+            {% if company_info["context"]["len_emails"] == 0 %}
+               <table>
+                  <tr>
+                     <td>⛔</td>
+                     <td class="red_text">Fant ingen E-post adresser!</td>
+                  </tr>
+                  <tr>
+                     <td></td>
+                     <td class="red_text">Forsøk å se på nettsidene vi fant.</td>
+                  </tr>
+               </table>
             {% else %}
                {% for mail in company_info["external_info"]["emails"] %}
                <table>
                   <tr>
                      <td>📧</td>
-                     <td><a class="styled_text" href="mailto:{{mail}}">{{mail}}</a></td>
+                     <td class="styled_text">{{mail}}</td>
                   </tr>
                {% endfor %}
                </table>
             {% endif %}
+            <br>
             <hr>
 
-            <h2>Info</h2>
+            <h3>Info</h3>
             <table>
                <tr>
                   <td>📅</td>
-                  <td>Opprettelsesdato: {{company_info["brreg_info"]["registreringsdatoEnhetsregisteret"]}}</td>
+                  <td>Opprettelse:</td>
+                  <td>{{company_info["brreg_info"]["registreringsdatoEnhetsregisteret"]}}</td>
                </tr>
                <tr>
                   <td>👷🏼</td>
-                  <td>Ansatte: {{company_info["brreg_info"]["antallAnsatte"]}}</td>
+                  <td>Ansatte:</td>
+                  <td>{{company_info["brreg_info"]["antallAnsatte"]}}</td>
                </tr>
                <tr>
                   <td>📜</td>
-                  <td>MVA registrert: {{company_info["brreg_info"]["registrertIMvaregisteret"]}}</td>
-               </tr>
-            </table>
-            <hr>
-
-
-            <h2>Avvikling:</h2>
-            <table>
-               <tr>
-                  <td>📛</td>
-                  <td>Under Avvikling: {{company_info["brreg_info"]["underAvvikling"]}}</td>
+                  <td>MVA registrert:</td>
+                  <td>{{company_info["context"]["registrertIMvaregisteret"]}}</td>
                </tr>
                <tr>
                   <td>📛</td>
-                  <td>Under Tvangs-oppløsning: {{company_info["brreg_info"]["underTvangsavviklingEllerTvangsopplosning"]}}</td>
+                  <td>Under Avvikling:</td>
+                  <td>{{company_info["context"]["underAvvikling"]}}</td>
+               </tr>
+               <tr>
+                  <td>📛</td>
+                  <td>Under Tvangs-oppløsning:</td>
+                  <td>{{company_info["context"]["underTvangsavviklingEllerTvangsopplosning"]}}</td>
                </tr>
             </table>
+            <br>
             <hr>
 
 

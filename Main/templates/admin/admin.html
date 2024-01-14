@@ -5,26 +5,34 @@
 {% endblock %}
 
 {% block content %}
-<h1>Administrasjon</h1>
+    <h1>Administrasjon</h1>
+    <hr>
 
+    <table class="center_div"">
+        <thead>
+            <td class="styled_text">Navn</td>
+            <td class="styled_text">Org. Nr</td>
+            <td class="styled_text">E-Post</td>
+            <td class="styled_text">Reg. Dato</td>
+            <td class="styled_text">Tillatelser</td>
+        </thead>
+    {% for user in users %}
+        <tr>
+            <td>{{user.company_name}}</td>
+            <td>{{user.company_number}}</td>
+            <td>{{user.company_email}}</td>
+            <td>{{user.register_date}}</td>
+            <td>{{user.permission}}</td>
+            <td><a style ="text-decoration: none; color: #5be469" href="{{url_for('usermanagement', company_number=user.company_number)}}">Rediger</a></td>
+        </tr>
+    {% endfor %}
+    </table>
+    <br>
+    <hr>
 
-<table class="center_div">
-    <thead>
-        <td class="styled_text">Navn</td>
-        <td class="styled_text">Org. Nr</td>
-        <td class="styled_text">E-Post</td>
-        <td class="styled_text">Reg. Dato</td>
-        <td class="styled_text">Tillatelser</td>
-    </thead>
-{% for user in users %}
-    <tr>
-        <td>{{user.company_name}}</td>
-        <td>{{user.company_number}}</td>
-        <td>{{user.company_email}}</td>
-        <td>{{user.register_date}}</td>
-        <td>{{user.permission}}</td>
-        <td><a style ="text-decoration: none; color: #5be469" href="{{url_for('usermanagement', company_number=user.company_number)}}">Edit</a></td>
-    </tr>
-{% endfor %}
-</table>
+    <h2>Oppdater BRREG-Data</h2>
+    <p></p><a class="styled_text" href="{{url_for('update_local_data')}}">📡 Oppdater Lokal-Data</a></p>
+    <p><a class="styled_text" href="{{url_for('update_api_data')}}">📡Oppdater API-Data</a></p>
+    <p class="red_text">⛔ Dette vil fryse nettsiden i 3-5 minutter.</p>
+    <hr>
 {% endblock %}

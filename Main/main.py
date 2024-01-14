@@ -2,7 +2,6 @@ import os
 import requests
 from datetime import date
 import pandas as pd
-from urllib import parse
 
 from flask import render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -10,7 +9,8 @@ from flask_login import UserMixin, login_user, login_required, logout_user, curr
 
 from config import setup, HOST, PORT, DEBUG
 from OrgOppslag import search_company
-from api_functions import api_request
+from OrgOppslag import update_brreg_files
+from api_functions import api_request, api_updatedata
 
 # ----------------------------------------------- Setup ----------------------------------------------------
 
@@ -111,11 +111,9 @@ def search_page():
 @app.route("/bedrift/<company>")
 @login_required
 def company_search(company):
-
+ 
     # Fetch Company info from api, will use backup solution if connection fails.
-    company_info = api_request(route="/bedrift/", value=company, validate_emails=False, google_search_count=3)
-    context = {"len_emails" : len(company_info["external_info"]["emails"]),
-               "iframe_company_name" : parse.quote(company_info["brreg_info"]["org_navn"])}
+    company_info = api_request(route="/bedrift/", value=company, validate_emails=False, google_search_count=4)
 
     # If no company was found, returns list of closest results.
     if type(company_info) == list:
@@ -123,7 +121,7 @@ def company_search(company):
     
     # If the company was found, display company page
     if type(company_info) == dict:
-        return render_template("company/company.html",  company_info = company_info, context=context)
+        return render_template("company/company.html",  company_info = company_info)
     
     # THIS IS A TEMPORARY SOLUTION
     flash("En feil har oppstått!")
@@ -147,6 +145,27 @@ def admin():
     admin_check() # Redirects if user is not admin
     users = User.query.all()
     return render_template("admin/admin.html", users=users)
+
+
+
+# ------------------------------------- Routes to update companies from brreg ----------------------------------------------------
+@app.route("/admin/updatelocaldata")
+@login_required
+def update_local_data():
+    admin_check()
+    update_brreg_files() # Update data on local server
+    return redirect(url_for("admin"))
+
+
+
+@app.route("/admin/updateapidata")
+@login_required
+def update_api_data():
+    admin_check()
+    api_updatedata() # Run Request to update brreg data on api server.
+    return redirect(url_for("admin"))
+
+
 
 
 # ------------------------------------- Admin User Management Page ----------------------------------------------------
@@ -178,17 +197,6 @@ def usermanagement(company_number):
 
 
 
-
-# ----------------------------------------------- TEMPORARY! Users Page ----------------------------------------------------
-@app.route("/entries")
-def entries():
-    users = User.query.all()
-    results = [{"company_number" : user.company_number,
-                 "company_name" : user.company_name,
-                 "email" : user.company_email,
-                 "register" : user.register_date,
-                 "permission" : user.permission} for user in users]
-    return render_template("/entries/entries.html",users=results)
 
 
 # TEMPORARY Function for creating first admin user.
