@@ -6,7 +6,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 # Config Variables
-HOST = "10.0.0.11"
+HOST = "127.0.0.1"
 PORT = 5001
 DEBUG = True
 API_HOST = "http://127.0.0.1:5000"
