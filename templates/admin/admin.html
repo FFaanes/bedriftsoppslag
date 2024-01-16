@@ -31,8 +31,10 @@
     <hr>
 
     <h2>Oppdater BRREG-Data</h2>
-    <p></p><a class="styled_text" href="{{url_for('update_local_data')}}">📡 Oppdater Lokal-Data</a></p>
+    <p><a class="styled_text" href="{{url_for('update_local_data')}}">📡 Oppdater Lokal-Data <span class="red_text">⛔ Dette vil fryse nettsiden i 3-5 minutter.</span></a></p>
     <p><a class="styled_text" href="{{url_for('update_api_data')}}">📡Oppdater API-Data</a></p>
-    <p class="red_text">⛔ Dette vil fryse nettsiden i 3-5 minutter.</p>
+    <hr>
+    <h2>Nullstilling</h2>
+    <p><a class="styled_text" href="{{url_for('clear_cache')}}">📡 Nullstill Cache</a></p>
     <hr>
 {% endblock %}

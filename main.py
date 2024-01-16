@@ -10,7 +10,7 @@ from flask_login import UserMixin, login_user, login_required, logout_user, curr
 from config import setup, HOST, PORT, DEBUG
 from OrgOppslag import search_company
 from OrgOppslag import update_brreg_files
-from api_functions import api_request, api_updatedata
+from api_functions import api_request, api_updatedata, clear_api_cache
 
 # ----------------------------------------------- Setup ----------------------------------------------------
 
@@ -164,6 +164,15 @@ def update_api_data():
     admin_check()
     api_updatedata() # Run Request to update brreg data on api server.
     return redirect(url_for("admin"))
+
+
+@app.route("/admin/clearcache")
+@login_required
+def clear_cache():
+    admin_check()
+    clear_api_cache()
+    return redirect(url_for("admin"))
+
 
 
 

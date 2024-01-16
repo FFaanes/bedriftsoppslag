@@ -19,3 +19,7 @@ def api_updatedata():
     requests.get(f"{API_HOST}/api/oppdaterdata", headers={"api-key" : API_KEY})
     return
 
+
+def clear_api_cache():
+    requests.get(f"{API_HOST}/api/clearcache", headers={"api-key" : API_KEY})
+    return
