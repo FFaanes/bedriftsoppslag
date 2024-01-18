@@ -131,18 +131,15 @@ def company_search(company):
 
 
 
-# ----------------------------------------------- ADMIN ----------------------------------------------------
-def admin_check():
-    if current_user.permission != 10:
-        return redirect(url_for("index"))
-
-
-
 # ----------------------------------------- Admin Main Page ----------------------------------------------------
 @app.route("/admin")
 @login_required
 def admin():
-    admin_check() # Redirects if user is not admin
+    # Redirects if user is not admin
+    if current_user.permission != 10:
+        flash("Mangler rettigheter!")
+        return redirect(url_for("index"))
+    
     users = User.query.all()
     return render_template("admin/admin.html", users=users)
 
@@ -152,7 +149,11 @@ def admin():
 @app.route("/admin/updatelocaldata")
 @login_required
 def update_local_data():
-    admin_check()
+    # Redirects if user is not admin
+    if current_user.permission != 10:
+        flash("Mangler rettigheter!")
+        return redirect(url_for("index"))
+    
     update_brreg_files() # Update data on local server
     return redirect(url_for("admin"))
 
@@ -161,7 +162,11 @@ def update_local_data():
 @app.route("/admin/updateapidata")
 @login_required
 def update_api_data():
-    admin_check()
+    # Redirects if user is not admin
+    if current_user.permission != 10:
+        flash("Mangler rettigheter!")
+        return redirect(url_for("index"))
+    
     api_updatedata() # Run Request to update brreg data on api server.
     return redirect(url_for("admin"))
 
@@ -169,7 +174,11 @@ def update_api_data():
 @app.route("/admin/clearcache")
 @login_required
 def clear_cache():
-    admin_check()
+    # Redirects if user is not admin
+    if current_user.permission != 10:
+        flash("Mangler rettigheter!")
+        return redirect(url_for("index"))
+    
     clear_api_cache()
     return redirect(url_for("admin"))
 
@@ -181,7 +190,11 @@ def clear_cache():
 @app.route("/admin/usermanagement/<company_number>", methods=["GET","POST"])
 @login_required
 def usermanagement(company_number):
-    admin_check() # Redirects if user is not admin
+    # Redirects if user is not admin
+    if current_user.permission != 10:
+        flash("Mangler rettigheter!")
+        return redirect(url_for("index"))
+    
     form = f.UserManagementForm()
     user = User.query.filter_by(company_number = company_number).first()
 

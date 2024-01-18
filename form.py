@@ -19,7 +19,7 @@ class RegisterForm(FlaskForm):
     def validate_email(form, field):
         session = db.session
         with app.app_context():
-            user = session.query(User).filter_by(company_email = str(field.data).lower).first()
+            user = session.query(User).filter_by(company_email = str(field.data).lower()).first()
             #user = queryUserTable(field.data)
             if user:
                 flash("Email er allerede registrert")
