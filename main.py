@@ -220,9 +220,8 @@ def create_admin(username, password, user_id, email):
         db.session.commit()
 
 
-
-
+import form as f
 # ----------------------------------------------- Run App ----------------------------------------------------
 if __name__ == "__main__":
-    import form as f
     app.run(host=HOST, port=PORT, debug=DEBUG)
+
