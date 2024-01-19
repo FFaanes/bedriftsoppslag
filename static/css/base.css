@@ -1,7 +1,8 @@
 
 html {
     font-family: 'Montserrat', sans-serif;
-    font-size: 2.5vh;
+    font-size: 1.5rem;
+    font-size: clamp(1.5rem, 0.5rem + 0.15vw, 1.5rem);
     color: var(--lighter);
 
     --darker: #111111;
@@ -10,7 +11,48 @@ html {
     --lighter: #6e6e6e;
     --highlight: #5be469;
     --red: rgb(240, 105, 105);
+    --red_transparent: rgba(240, 105, 105, 0.11);
     background-image: url("../img/background.png");
+}
+
+
+.index_info_boxes {
+    font-size: 0.8rem;
+    width: 70%;
+    margin: auto;
+    margin-bottom: 20px;
+    color: rgb(179, 179, 179);
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    background-color: #1F1F1F;
+    padding: 30px;
+    border-radius: 13px;
+    transition: background-color ease 0.5s;
+}
+
+.index_info_boxes:hover {
+    background-color: #1d1d1d;
+
+}
+
+
+
+.index_info_boxes:hover .rotate_icon{
+    cursor: default;
+    top: -10px;
+    transform: rotate(-10deg);
+}
+
+
+.rotate_icon {
+    font-size: 1.5rem;
+    display: inline-block;
+    position: relative;
+    top: 5px;
+    transform: rotate(0deg);
+    transition: all ease 0.5s;
+    margin: 0px 20px 0px 20px;
 }
 
 .styled_text {
@@ -26,6 +68,7 @@ html {
 .red_text {
     color: var(--red);
 }
+
 
 .styled_text:hover {
     color: rgba(255, 255, 255, 0);
@@ -50,6 +93,7 @@ body {
 
 
 .navbar {
+    width: 100%;
     background-color: var(--dark_transparent);
     margin: 0px;
     margin-bottom: 5vh;
@@ -90,11 +134,9 @@ body {
 }
 
 .form {
-    background-color: var(--dark_transparent);
     margin: auto;
-    width: 40%;
+    width: 80%;
 
-    border: 1px solid var(--highlight);
     border-radius: 10px;
     padding: 20px;
     padding-bottom: 40px;
@@ -108,8 +150,9 @@ body {
     font-family: 'Montserrat', sans-serif;
     font-size: 2vh;
 
-    height: 25px;
-    width: 60%;
+    height: 4vh;
+    width: 45vh;
+    max-width: 100%;
     border: 1px solid #161616;
     border-radius: 7px;
     padding-left: 15px;
@@ -158,4 +201,9 @@ body {
 
 td {
     padding: 5px 15px 5px 15px;
+}
+
+.border_td {
+    border: #1F1F1F solid 3px;
+    border-radius: 8px;
 }

@@ -10,16 +10,16 @@
 
     <table class="center_div"">
         <thead>
-            <td class="styled_text">E-Post</td>
-            <td class="styled_text">Registrert</td>
-            <td class="styled_text">Tillatelser</td>
+            <td class="styled_text border_td">E-Post</td>
+            <td class="styled_text border_td">Registrert</td>
+            <td class="styled_text border_td">Tillatelser</td>
         </thead>
     {% for user in users %}
         <tr>
-            <td>{{user.company_email}}</td>
-            <td>{{user.register_date}}</td>
-            <td>{{user.permission}}</td>
-            <td><a style ="text-decoration: none; color: #5be469" href="{{url_for('usermanagement', company_email=user.company_email)}}">Rediger</a></td>
+            <td class="border_td">{{user.company_email}}</td>
+            <td class="border_td">{{user.register_date}}</td>
+            <td class="border_td">{{user.permission}}</td>
+            <td class="border_td"><a style ="text-decoration: none; color: #5be469" href="{{url_for('usermanagement', company_email=user.company_email)}}">Rediger</a></td>
         </tr>
     {% endfor %}
     </table>

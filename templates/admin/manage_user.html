@@ -5,16 +5,19 @@
 {% endblock %}
 
 {% block content %}
-<div class="center_div">
+<div class="center_div" style="width: 40%;">
+    <h2 class="styled_text" style="text-align: center; margin-bottom: 5px;">Rediger Bruker</h2>
     <form class="form" method="POST" action="">
         <h1 style="text-align: center;">{{user.company_name}}</h1>
         {{form.hidden_tag()}}
+        <p class="styled_text" style="text-align: center; margin-bottom: 5px;">E-post adresse</p>
         {{form.email(value=user.company_email)}}
+        <p class="styled_text" style="text-align: center; margin-bottom: 5px;">Tillatelser</p>
         {{form.permission(value=user.permission)}}
         {{form.submit(class_="form_submit_green")}}
         <br>
-        {{form.verify_delete}}
         {{form.delete(class_="form_submit_red")}}
+        {{form.verify_delete}}
     </form>
 </div>
 

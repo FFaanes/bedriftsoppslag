@@ -6,6 +6,19 @@
 
 {% block content %}
 <h1>{{current_user.company_email}}</h1>
+<table>
+    <thead>
+        <td class="styled_text border_td">Registrert</td>
+        <td class="styled_text border_td">Tillatelser</td>
+    </thead>
+    <tr>
+        <td class="border_td">{{current_user.register_date}}</td>
+        <td class="border_td">{{current_user.permission}}</td>
+    </tr>
+
+</table>
+<br>
+
 <a class="red_text" href="{{url_for('logout')}}">Logg ut</a>
 
 {% endblock %}
