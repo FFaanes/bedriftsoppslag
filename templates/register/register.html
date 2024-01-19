@@ -16,4 +16,9 @@
             {{form.submit(class_="form_submit_green")}}
         </form>
     </div>
+    <div style="text-align: center;" class="flash_messages center_div">
+        {% for error in form.password.errors %}
+            <p>Passord matcher ikke!</p>
+        {% endfor %}
+    </div>
 {% endblock %}
