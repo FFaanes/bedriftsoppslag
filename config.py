@@ -7,16 +7,16 @@ from flask_sqlalchemy import SQLAlchemy
 
 # Config Variables
 HOST = "10.0.0.11"
-PORT = 5000
+PORT = 8000
 DEBUG = True
-API_HOST = "http://127.0.0.1:5001"
+API_HOST = "http://10.0.0.11:5001"
 API_KEY = "test_api_key"
 
 
 def setup():
     # APP setup
     app = Flask(__name__, template_folder="templates", static_folder="static")
-    app.config["SECRET_KEY"] = "-"
+    app.config["SECRET_KEY"] = "-_-_-..-_-_-"
 
     # Bcrypt
     bcrypt = Bcrypt(app)

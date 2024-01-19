@@ -11,12 +11,6 @@
             {% else %}
                 {{form.email}}
             {% endif %}
-
-            {% if org_nr %}
-                {{form.org_nr(value=org_nr)}}
-            {% else %}
-                {{form.org_nr}}
-            {% endif %}
             {{form.password}}
             {{form.c_password}}
             {{form.submit(class_="form_submit_green")}}

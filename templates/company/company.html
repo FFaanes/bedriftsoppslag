@@ -104,37 +104,6 @@
             <br>
             <hr>
 
-
-
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <h3>--- TEMPORARY ----</h3>
-
-            <h2>External Info</h2>
-            {% for item in company_info["external_info"] %}
-               <p>{{item}} : {{company_info["external_info"][item]}}</p>
-            {% endfor %}
-
-            <h2>Names</h2>
-            {% for item in company_info["formatted_names"] %}
-               <p>{{item}} : {{company_info["formatted_names"][item]}}</p>
-            {% endfor %}
-
-            {% for item in company_info["brreg_info"] %}
-               <p>{{item}} : {{company_info["brreg_info"][item]}}</p>
-            {% endfor %}
-            <br>
-
-            {% for email in company_info["suggested_emails"] %}
-               <p>{{email}}</p>
-            {% endfor %}
-            <hr>
-
-
-         </div>
    {% endif %}
 {% endblock %}
 

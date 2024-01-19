@@ -30,8 +30,8 @@ def load_user(user_id):
 # User
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    company_number = db.Column(db.Integer, nullable=False, unique=True)
-    company_name = db.Column(db.String(100), nullable=False)
+    #company_number = db.Column(db.Integer, nullable=False, unique=True)
+    #company_name = db.Column(db.String(100), nullable=False)
     company_email = db.Column(db.String(50), nullable=False)
     register_date = db.Column(db.String(30), nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
@@ -53,10 +53,10 @@ def index():
 def register():
     form = f.RegisterForm()   
     if form.validate_on_submit():
-        company = search_company(form.org_nr.data)
-        user = User(company_number = form.org_nr.data,
-                    company_name = company["brreg_info"]["org_navn"],
-                    company_email = str(form.email.data).lower(),
+        #company = search_company(form.org_nr.data)
+        #company_number = form.org_nr.data, <-  in user class
+        #company_name = company["brreg_info"]["org_navn"]
+        user = User(company_email = str(form.email.data).lower(),
                     register_date = str(date.today()),
                     password_hash = bcrypt.generate_password_hash(form.password.data),
                     permission = 0)
@@ -100,6 +100,11 @@ def profile():
 @app.route("/søk", methods=["GET","POST"])
 @login_required
 def search_page():
+    # Redirects if user is not verified
+    if current_user.permission < 1:
+        flash("Mangler rettigheter!")
+        return redirect(url_for("index"))
+    
     form = f.CompanySearchForm()
     if form.validate_on_submit():
         search_query = form.query.data
@@ -112,6 +117,11 @@ def search_page():
 @login_required
 def company_search(company):
  
+    # Redirects if user is not verified
+    if current_user.permission < 1:
+        flash("Mangler rettigheter!")
+        return redirect(url_for("index"))
+    
     # Fetch Company info from api, will use backup solution if connection fails.
     company_info = api_request(route="/bedrift/", value=company, validate_emails=False, google_search_count=4)
 
@@ -187,32 +197,32 @@ def clear_cache():
 
 
 # ------------------------------------- Admin User Management Page ----------------------------------------------------
-@app.route("/admin/usermanagement/<company_number>", methods=["GET","POST"])
+@app.route("/admin/usermanagement/<company_email>", methods=["GET","POST"])
 @login_required
-def usermanagement(company_number):
+def usermanagement(company_email):
     # Redirects if user is not admin
     if current_user.permission != 10:
         flash("Mangler rettigheter!")
         return redirect(url_for("index"))
     
     form = f.UserManagementForm()
-    user = User.query.filter_by(company_number = company_number).first()
+    user = User.query.filter_by(company_email = company_email).first()
 
     if form.validate_on_submit():
     
         if form.submit.data:
-            User.query.filter_by(company_number = user.company_number).update({"company_email":str(form.email.data).lower(), "company_name":form.name.data, "permission":int(form.permission.data)})
+            User.query.filter_by(company_email = user.company_email).update({"company_email":str(form.email.data).lower(), "permission":int(form.permission.data)})
             db.session.commit()
             return redirect(url_for("admin"))
 
         if form.delete.data:
             if form.verify_delete.data == "BEKREFT":
-                User.query.filter_by(company_number = user.company_number).delete()
+                User.query.filter_by(company_email = user.company_email).delete()
                 db.session.commit()
-                flash(f"{user.company_name} slettet!")
+                flash(f"{user.company_email} slettet!")
                 return redirect(url_for("admin"))
             flash("Skriv BEKREFT for å slette bruker.")
-            return redirect(url_for('usermanagement', company_number=user.company_number))
+            return redirect(url_for('usermanagement', company_email=user.company_email))
     else:
         return render_template("admin/manage_user.html", user=user, form=form)
 
@@ -222,14 +232,8 @@ def usermanagement(company_number):
 
 
 # TEMPORARY Function for creating first admin user.
-def create_admin(username, password, user_id, email):
-        user = User(company_number = user_id,
-                    company_name = username,
-                    company_email = email,
-                    register_date = date.today(),
-                    password_hash = bcrypt.generate_password_hash(password),
-                    permission=10)
-        db.session.add(user)
+def create_admin(email, user):
+        User.query.filter_by(company_email = user.company_email).update({"permission":int(10)})
         db.session.commit()
 
 

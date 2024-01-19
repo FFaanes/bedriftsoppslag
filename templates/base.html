@@ -13,7 +13,7 @@
     <div class="nav_left">
         <a style="font-size: larger;" href="{{url_for('index')}}">BedriftOppslag.no</a>
         {% if current_user.is_authenticated %}
-            {% if current_user.permission >= 0 %}
+            {% if current_user.permission >= 1 %}
                 <a href="{{url_for('search_page')}}">Søk Etter Bedrift</a>
             {% endif %}
         {% endif %}

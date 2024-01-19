@@ -11,7 +11,7 @@ from main import app, db, User
 # ----------------------------------------------- Register Form ----------------------------------------------------#
 class RegisterForm(FlaskForm):
     email = EmailField(validators=[InputRequired()] ,render_kw={"placeholder":"E-post"})
-    org_nr = StringField(validators=[InputRequired(), Length(min=9, max=9)], render_kw={"placeholder":"Org. Nummer"})
+    #org_nr = StringField(validators=[InputRequired(), Length(min=9, max=9)], render_kw={"placeholder":"Org. Nummer"})
     password = PasswordField(validators=[InputRequired(),Length(min=1, max=20), EqualTo("c_password", message="Passord må være like!")], render_kw={"placeholder":"Passord"})
     c_password = PasswordField(validators=[InputRequired(),Length(min=1, max=20)], render_kw={"placeholder":"Bekreft Passord"})
     submit = SubmitField("Registrer")
@@ -20,26 +20,25 @@ class RegisterForm(FlaskForm):
         session = db.session
         with app.app_context():
             user = session.query(User).filter_by(company_email = str(field.data).lower()).first()
-            #user = queryUserTable(field.data)
             if user:
                 flash("Email er allerede registrert")
                 raise ValidationError("Email er allerede registrert")
             db.session.close()
 
-    def validate_org_nr(form, field):
-        session = db.session
-        with app.app_context():
-            user = session.query(User).filter_by(company_number = field.data).first()
-            if user:
-                flash("Bruker er allerede registrert")
-                raise ValidationError("Bruker er allerede registrert")
-            db.session.close()
+    # def validate_org_nr(form, field):
+    #     session = db.session
+    #     with app.app_context():
+    #         user = session.query(User).filter_by(company_number = field.data).first()
+    #         if user:
+    #             flash("Bruker er allerede registrert")
+    #             raise ValidationError("Bruker er allerede registrert")
+    #         db.session.close()
         
-        # Check if the company number exists in the register
-        org_name = search_company(field.data)
-        if org_name == None:
-            flash("Org. Nummer finnes ikke")
-            raise ValidationError("Org. Nummer finnes ikke")
+        # # Check if the company number exists in the register
+        # org_name = search_company(field.data)
+        # if org_name == None:
+        #     flash("Org. Nummer finnes ikke")
+        #     raise ValidationError("Org. Nummer finnes ikke")
         
 
 
@@ -86,7 +85,7 @@ class CompanySearchForm(FlaskForm):
 # ----------------------------------------------- Edit User Form ----------------------------------------------------#
 class UserManagementForm(FlaskForm):
     email = StringField("Email")
-    name = StringField("Name")
+    #name = StringField("Name")
     permission = StringField("Permission")
     submit = SubmitField("Godta")
 
