@@ -19,7 +19,7 @@
             <td class="border_td">{{user.company_email}}</td>
             <td class="border_td">{{user.register_date}}</td>
             <td class="border_td">{{user.permission}}</td>
-            <td class="border_td"><a style ="text-decoration: none; color: #5be469" href="{{url_for('usermanagement', company_email=user.company_email)}}">Rediger</a></td>
+            <td class="border_td"><a style ="text-decoration: none; color: #5be469" href="{{url_for('usermanagement', company_email=user.company_email)}}">🔧</a></td>
         </tr>
     {% endfor %}
     </table>

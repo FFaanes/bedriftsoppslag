@@ -12,10 +12,10 @@
 <div class="navbar">
 
     <div class="nav_left">
-        <a style="font-size: larger;" href="{{url_for('index')}}">BedriftOppslag.no</a>
+        <a style="font-size: 1.7rem; position: relative; top: -3px;" href="{{url_for('index')}}">⌂</a>
         {% if current_user.is_authenticated %}
             {% if current_user.permission >= 1 %}
-                <a href="{{url_for('search_page')}}">Søk Etter Bedrift</a>
+                <a href="{{url_for('search_page')}}"><span style="font-size: larger;">⌕</span> Søk</a>
             {% endif %}
         {% endif %}
     </div>
@@ -27,7 +27,7 @@
         {% else %}
             <a href="{{url_for('profile')}}">Profil</a>
             {% if current_user.permission == 10 %}
-                <a href="{{url_for('admin')}}">Administrasjon</a>
+                <a style="color: white;" href="{{url_for('admin')}}">⚙️</a>
         {% endif %}
         {% endif %}
     </div>
