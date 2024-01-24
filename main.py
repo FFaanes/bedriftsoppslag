@@ -10,7 +10,7 @@ from flask_login import UserMixin, login_user, login_required, logout_user, curr
 from config import setup, HOST, PORT, DEBUG
 from OrgOppslag import search_company
 from OrgOppslag import update_brreg_files
-from api_functions import api_request, api_updatedata, clear_api_cache
+from api_functions import api_request, api_updatedata, clear_api_cache, api_historymanager
 
 # ----------------------------------------------- Setup ----------------------------------------------------
 
@@ -123,7 +123,7 @@ def company_search(company):
         return redirect(url_for("index"))
     
     # Fetch Company info from api, will use backup solution if connection fails.
-    company_info = api_request(route="/bedrift/", value=company, validate_emails=False, google_search_count=4)
+    company_info = api_request(route="/bedrift/", value=company, validate_emails=False, google_search_count=4, user=current_user.company_email)
 
     # If no company was found, returns list of closest results.
     if type(company_info) == list:
@@ -151,7 +151,8 @@ def admin():
         return redirect(url_for("index"))
     
     users = User.query.all()
-    return render_template("admin/admin.html", users=users)
+
+    return render_template("admin/admin.html", users=users, search_history=api_historymanager("load")[1])
 
 
 
@@ -192,6 +193,15 @@ def clear_cache():
     clear_api_cache()
     return redirect(url_for("admin"))
 
+@app.route("/admin/clearhistory")
+@login_required
+def clear_history():
+    if current_user.permission != 10:
+            flash("Mangler rettigheter!")
+            return redirect(url_for("index"))
+    
+    api_historymanager("remove")
+    return redirect(url_for("admin"))
 
 
 

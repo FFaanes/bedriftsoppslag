@@ -30,7 +30,28 @@
     <p><a class="styled_text" href="{{url_for('update_local_data')}}">📡 Oppdater Lokal-Data <span class="red_text">⛔ Dette vil fryse nettsiden i 3-5 minutter.</span></a></p>
     <p><a class="styled_text" href="{{url_for('update_api_data')}}">📡Oppdater API-Data</a></p>
     <hr>
+
     <h2>Nullstilling</h2>
     <p><a class="styled_text" href="{{url_for('clear_cache')}}">📡 Nullstill Cache</a></p>
     <hr>
+
+
+
+    <h2>Søkehistorikk <span><a href="{{url_for('clear_history')}}" class="red_text" style="font-size: small; text-decoration: none;"> Slett historikk</a></span></h2>
+    <table>
+        <thead>
+            <td></td>
+            <td class="styled_text">Tidspunkt</td>
+            <td class="styled_text">Bruker</td>
+            <td class="styled_text">Søk</td>
+        </thead>
+        {% for search in search_history %}
+            <tr style="font-size: smaller;">
+                <td>🔎</td>
+                <td>{{search}}</td>
+                <td>{{search_history[search]["user"]}}</td>
+                <td>{{search_history[search]["search"]}}</td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
