@@ -40,15 +40,6 @@
         {% block content %}
         {% endblock %}
 
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <div style="text-align: center;" class="flash_messages center_div">
-                {% for message in messages%}
-                    <p>{{message}}</p>
-                {% endfor %}
-            {% endif %}
-            </div>
-        {% endwith %}
     </div>
 
     

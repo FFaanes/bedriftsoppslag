@@ -1,28 +1,35 @@
 {% extends "base.html" %}
 
-
-{% block navigation_bar_links %}
-{% endblock %}
-
 {% block content %}
     <h1 style="text-align: center;">Administrasjon</h1>
     <hr>
+    <h2 style="text-align: center;">Brukere</h2>
 
-    <table class="center_div"">
-        <thead>
-            <td class="styled_text border_td">E-Post</td>
-            <td class="styled_text border_td">Registrert</td>
-            <td class="styled_text border_td">Tillatelser</td>
-        </thead>
-    {% for user in users %}
-        <tr>
-            <td class="border_td">{{user.company_email}}</td>
-            <td class="border_td">{{user.register_date}}</td>
-            <td class="border_td">{{user.permission}}</td>
-            <td class="border_td"><a style ="text-decoration: none; color: #5be469" href="{{url_for('usermanagement', company_email=user.company_email)}}">🔧</a></td>
-        </tr>
-    {% endfor %}
-    </table>
+    <div class="scrollable">
+        <table class="center_div">
+            <thead>
+                <td class="styled_text">E-Post</td>
+                <td class="styled_text">Registrert</td>
+                <td class="styled_text">Tillatelser</td>
+                <td class="styled_text">Antall Søk</td>
+            </thead>
+        {% for user in users %}
+            <tr>
+                <td>{{user["company_email"]}}</td>
+                <td>{{user["register_date"]}}</td>
+                <td>{{user["permission"]}}</td>
+                <td>{{user["search_count"]}}</td>
+                <td><a style ="text-decoration: none; color: #5be469" href="{{url_for('usermanagement', company_email=user.company_email)}}">🔧</a></td>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+    <form class="form" method="POST" action="">
+        {{email_search_form.hidden_tag()}}
+        {{email_search_form.email}}
+        {{email_search_form.submit(class_="form_submit_green")}}
+    </form>
+    {% include "flash_messages.html" %}
     <br>
     <hr>
 
@@ -36,22 +43,17 @@
     <hr>
 
 
-
     <h2>Søkehistorikk <span><a href="{{url_for('clear_history')}}" class="red_text" style="font-size: small; text-decoration: none;"> Slett historikk</a></span></h2>
+    <div class="scrollable">
     <table>
-        <thead>
-            <td></td>
-            <td class="styled_text">Tidspunkt</td>
-            <td class="styled_text">Bruker</td>
-            <td class="styled_text">Søk</td>
-        </thead>
-        {% for search in search_history %}
-            <tr style="font-size: smaller;">
-                <td>🔎</td>
-                <td>{{search}}</td>
-                <td>{{search_history[search]["user"]}}</td>
-                <td>{{search_history[search]["search"]}}</td>
-            </tr>
-        {% endfor %}
+            {% for search in search_history %}
+                <tr style="font-size: smaller;">
+                    <td>🔎</td>
+                    <td>{{search}}</td>
+                    <td><a class="styled_text" href="{{url_for('usermanagement', company_email=search_history[search]['user'])}}">{{search_history[search]["user"]}}</a></td>
+                    <td><a class="styled_text" href="{{url_for('company_search', company=search_history[search]['search'])}}">{{search_history[search]["search"]}}</a></td>
+                </tr>
+            {% endfor %}
     </table>
+</div>
 {% endblock %}

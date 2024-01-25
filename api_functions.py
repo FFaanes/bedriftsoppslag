@@ -27,3 +27,6 @@ def clear_api_cache():
 
 def api_historymanager(mode):
     return requests.get(f"{API_HOST}/api/searchhistory", headers={"api-key" : API_KEY, "mode":mode}).json()
+
+def api_searchcounts():
+    return requests.get(f"{API_HOST}/api/searchcounts", headers={"api-key" : API_KEY}).json()

@@ -16,6 +16,14 @@ html {
 }
 
 
+
+.scrollable {
+    overflow-y: scroll;
+    height: 30vh;
+    background-color: rgba(48, 48, 48, 0.473);
+    border-radius: 15px;
+}
+
 .index_info_boxes {
     font-size: 0.8rem;
     width: 70%;
@@ -85,10 +93,10 @@ body {
 
 .flash_messages {
     color: var(--red);
-    background-color: rgba(20, 20, 20, 0.068);
+    background-color: rgba(7, 7, 7, 0.068);
     width: fit-content;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 .navbar {

@@ -8,9 +8,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, login_required, logout_user, current_user
 
 from config import setup, HOST, PORT, DEBUG
-from OrgOppslag import search_company
 from OrgOppslag import update_brreg_files
-from api_functions import api_request, api_updatedata, clear_api_cache, api_historymanager
+from api_functions import api_request, api_updatedata, clear_api_cache, api_historymanager, api_searchcounts
 
 # ----------------------------------------------- Setup ----------------------------------------------------
 
@@ -30,13 +29,10 @@ def load_user(user_id):
 # User
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    #company_number = db.Column(db.Integer, nullable=False, unique=True)
-    #company_name = db.Column(db.String(100), nullable=False)
     company_email = db.Column(db.String(50), nullable=False)
     register_date = db.Column(db.String(30), nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
     permission = db.Column(db.Integer)
-
 
 
 
@@ -53,9 +49,6 @@ def index():
 def register():
     form = f.RegisterForm()   
     if form.validate_on_submit():
-        #company = search_company(form.org_nr.data)
-        #company_number = form.org_nr.data, <-  in user class
-        #company_name = company["brreg_info"]["org_navn"]
         user = User(company_email = str(form.email.data).lower(),
                     register_date = str(date.today()),
                     password_hash = bcrypt.generate_password_hash(form.password.data),
@@ -138,11 +131,8 @@ def company_search(company):
     return redirect(url_for("search_page"))
 
 
-
-
-
 # ----------------------------------------- Admin Main Page ----------------------------------------------------
-@app.route("/admin")
+@app.route("/admin", methods=["GET","POST"])
 @login_required
 def admin():
     # Redirects if user is not admin
@@ -150,9 +140,36 @@ def admin():
         flash("Mangler rettigheter!")
         return redirect(url_for("index"))
     
-    users = User.query.all()
+    # If an email was searched in the form, redirect to users page.
+    email_search_form = f.AdminSearchEmail()
+    if email_search_form.validate_on_submit():
+        if User.query.filter_by(company_email = email_search_form.email.data).first():
+            return redirect(url_for("usermanagement", company_email=email_search_form.email.data))
+        else:
+            flash("Fant ikke bruker!")
+            return redirect(url_for("admin"))
 
-    return render_template("admin/admin.html", users=users, search_history=api_historymanager("load")[1])
+
+    # Combine search counts onto the database users for display in admin page,
+    # This was a simpler solution compared to reworking the database structure.
+    # However that would have been the optimal solution.
+    users = []
+    search_counts = api_searchcounts()[1]
+    for user in User.query.all():
+        try:
+            user_searchcount = search_counts[user.company_email]
+        except KeyError:
+            user_searchcount = 0
+
+        users.append({"company_email" : user.company_email,
+                      "register_date" : user.register_date,
+                      "permission" : user.permission,
+                      "search_count" : user_searchcount})
+
+    # Gather search history and reverse from newest to oldest.
+    search_history = dict(reversed(dict(api_historymanager("load")[1]).items()))
+
+    return render_template("admin/admin.html", users=users, search_history=search_history, email_search_form=email_search_form)
 
 
 
@@ -205,7 +222,6 @@ def clear_history():
 
 
 
-
 # ------------------------------------- Admin User Management Page ----------------------------------------------------
 @app.route("/admin/usermanagement/<company_email>", methods=["GET","POST"])
 @login_required
@@ -218,8 +234,13 @@ def usermanagement(company_email):
     form = f.UserManagementForm()
     user = User.query.filter_by(company_email = company_email).first()
 
-    if form.validate_on_submit():
-    
+    # Get users search count for view in the manage user page.
+    try:
+        search_count = api_searchcounts()[1][user.company_email]
+    except KeyError:
+        search_count = 0
+
+    if form.validate_on_submit():    
         if form.submit.data:
             User.query.filter_by(company_email = user.company_email).update({"company_email":str(form.email.data).lower(), "permission":int(form.permission.data)})
             db.session.commit()
@@ -234,7 +255,7 @@ def usermanagement(company_email):
             flash("Skriv BEKREFT for å slette bruker.")
             return redirect(url_for('usermanagement', company_email=user.company_email))
     else:
-        return render_template("admin/manage_user.html", user=user, form=form)
+        return render_template("admin/manage_user.html", user=user, search_count=search_count ,form=form)
 
 
 
@@ -242,7 +263,7 @@ def usermanagement(company_email):
 
 
 # TEMPORARY Function for creating first admin user.
-def create_admin(email, user):
+def create_admin(user):
         User.query.filter_by(company_email = user.company_email).update({"permission":int(10)})
         db.session.commit()
 

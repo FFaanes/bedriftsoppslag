@@ -15,10 +15,13 @@
         <p class="styled_text" style="text-align: center; margin-bottom: 5px;">Tillatelser</p>
         {{form.permission(value=user.permission)}}
         {{form.submit(class_="form_submit_green")}}
+        <p class="styled_text" style="text-align: center; margin-bottom: 5px;">Antall Søk</p>
+        <p style="text-align: center; margin-bottom: 5px; color: white;">{{search_count}}</p>
         <br>
         {{form.delete(class_="form_submit_red")}}
         {{form.verify_delete}}
     </form>
 </div>
+{% include "flash_messages.html" %}
 
 {% endblock %}
