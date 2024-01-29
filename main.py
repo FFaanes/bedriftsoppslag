@@ -23,6 +23,7 @@ db = SQLAlchemy(app)
 def load_user(user_id):
     return db.session.get(User, user_id)
 
+login_manager.login_message = "Du må være innlogget for dette."
 
 
 # ----------------------------------------------- Database Tables ----------------------------------------------------
